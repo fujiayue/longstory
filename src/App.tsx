@@ -9,7 +9,6 @@ import ChatView from "./components/ChatView";
 import ThoughtMapModal from "./components/ThoughtMapModal";
 import KnowledgeCardModal from "./components/KnowledgeCardModal";
 import UnlockBanner from "./components/UnlockBanner";
-import ApiConfigScreen from "./components/ApiConfigScreen";
 import type { PhilosopherMeta, ThoughtNode } from "./types";
 
 function AppInner() {
@@ -224,11 +223,5 @@ function AppInner() {
 }
 
 export default function App() {
-  const apiReady = useAppStore((s) => s.apiReady);
-  const setApiReady = useAppStore((s) => s.setApiReady);
-
-  if (!apiReady) {
-    return <ApiConfigScreen onReady={() => setApiReady(true)} />;
-  }
   return <AppInner />;
 }

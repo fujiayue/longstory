@@ -19,7 +19,7 @@ import { idbStorage } from "./persistence";
      - usedQuestions        (serialised as array, rehydrated as Set)
 
    EPHEMERAL (reset on refresh):
-     - view, apiReady, activePhilosopher  (re-enter from sky)
+     - view, activePhilosopher             (re-enter from sky)
      - input, loading                     (UI transient)
      - suggestedQs                        (regenerated)
      - showThoughtMap, showCardNodeId, unlockNotif (modals)
@@ -29,10 +29,6 @@ export interface AppState {
   // Navigation
   view: AppView;
   setView: (v: AppView) => void;
-
-  // API ready
-  apiReady: boolean;
-  setApiReady: (v: boolean) => void;
 
   // Star map
   philosophers: PhilosopherMeta[];
@@ -90,10 +86,6 @@ export const useAppStore = create<AppState>()(
       // Navigation
       view: "sky" as AppView,
       setView: (v) => set({ view: v }),
-
-      // API
-      apiReady: false,
-      setApiReady: (v) => set({ apiReady: v }),
 
       // Star map
       philosophers: PHILOSOPHERS,
@@ -210,7 +202,6 @@ export const useAppStore = create<AppState>()(
           ),
           // Ensure ephemeral fields stay at defaults
           view: "sky" as AppView,
-          apiReady: false,
           activePhilosopher: null,
           input: "",
           loading: false,

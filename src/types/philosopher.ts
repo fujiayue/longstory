@@ -23,23 +23,6 @@ export interface PhilosopherMeta {
 /** A pair of philosopher IDs that form a constellation line */
 export type ConstellationEdge = [string, string];
 
-/** Provider presets for AI configuration */
-export interface ProviderPreset {
-  label: string;
-  endpoint: string;
-  model: string;
-  temperature: number;
-  helpUrl: string;
-}
-
-export interface ApiConfig {
-  provider: "anthropic" | "openai-compat";
-  apiKey: string;
-  endpoint: string;
-  model: string;
-  temperature: number;
-}
-
 /** A complete philosopher module bundling all knowledge and prompt logic */
 export interface PhilosopherModule {
   meta: PhilosopherMeta;

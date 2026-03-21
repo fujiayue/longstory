@@ -1,4 +1,4 @@
-export { callAI, setApiConfig, getApiConfig } from "./ai-client";
+export { callAI } from "./ai-client";
 export { getDialogueStage } from "./stage";
 export { selectFragments } from "./fragment-selector";
 export { getSuggestedQuestions } from "./question-generator";

@@ -1,4 +1,4 @@
-import type { PhilosopherMeta, ConstellationEdge, ProviderPreset } from "../types";
+import type { PhilosopherMeta, ConstellationEdge } from "../types";
 
 export const PHILOSOPHERS: PhilosopherMeta[] = [
   { id: "socrates", name: "苏格拉底", en: "Socrates", era: "469-399 BC", x: 50, y: 38, unlocked: true, avatar: "Σ", color: "#F5C542", brief: "古希腊哲学之父，以反诘法闻名于世" },
@@ -23,33 +23,3 @@ export const CONSTELLATIONS: ConstellationEdge[] = [
   ["kant", "nietzsche"],
 ];
 
-export const PROVIDER_PRESETS: Record<string, ProviderPreset> = {
-  anthropic: {
-    label: "Anthropic (Claude)",
-    endpoint: "https://api.anthropic.com/v1/messages",
-    model: "claude-sonnet-4-20250514",
-    temperature: 0.7,
-    helpUrl: "https://console.anthropic.com/settings/keys",
-  },
-  deepseek: {
-    label: "DeepSeek",
-    endpoint: "https://api.deepseek.com/chat/completions",
-    model: "deepseek-chat",
-    temperature: 0.7,
-    helpUrl: "https://platform.deepseek.com/api_keys",
-  },
-  openai: {
-    label: "OpenAI",
-    endpoint: "https://api.openai.com/v1/chat/completions",
-    model: "gpt-4o",
-    temperature: 0.7,
-    helpUrl: "https://platform.openai.com/api-keys",
-  },
-  custom: {
-    label: "自定义 (OpenAI 兼容)",
-    endpoint: "",
-    model: "",
-    temperature: 0.7,
-    helpUrl: "",
-  },
-};
