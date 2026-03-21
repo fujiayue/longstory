@@ -1,6 +1,8 @@
 import { Router, type Request, type Response } from "express";
+import { chatRateLimit } from "../middleware/rate-limit";
 
 const router = Router();
+router.use(chatRateLimit);
 
 interface ChatRequestBody {
   systemPrompt: string;
