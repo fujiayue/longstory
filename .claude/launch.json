@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "start-dev.bat",
-      "runtimeArgs": [],
+      "runtimeExecutable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "runtimeArgs": ["-NoProfile", "-Command", "cd 'F:/claude_local/dialogue-with-stars'; node ./node_modules/vite/bin/vite.js --port 5173"],
       "port": 5173
     }
   ]
