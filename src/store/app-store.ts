@@ -7,22 +7,18 @@ import { idbStorage } from "./persistence";
 /* ----------------------------------------------------------------
    Which fields to persist vs. treat as ephemeral:
 
-   PERSISTED (survives page refresh):
+   PERSISTED (survives page refresh — progress data):
      - philosophers        (unlock state)
      - collectedCards
      - exploredNodes
      - chatCount
-     - messages            (resume conversation)
-     - turnCount
-     - lastCardTurn
-     - recentMatchedNodes
-     - usedQuestions        (serialised as array, rehydrated as Set)
 
-   EPHEMERAL (reset on refresh):
-     - view, activePhilosopher             (re-enter from sky)
-     - input, loading                     (UI transient)
-     - suggestedQs                        (regenerated)
-     - showThoughtMap, showCardNodeId, unlockNotif (modals)
+   EPHEMERAL (reset on refresh — conversation is per-session):
+     - messages, turnCount, lastCardTurn, recentMatchedNodes
+     - usedQuestions, suggestedQs
+     - view, activePhilosopher
+     - input, loading
+     - showThoughtMap, showCardNodeId, unlockNotif
    ---------------------------------------------------------------- */
 
 export interface AppState {
@@ -175,40 +171,24 @@ export const useAppStore = create<AppState>()(
       // Custom serialiser: Set<string> → string[]
       // Custom deserialiser: string[] → Set<string>
       // partialize controls which keys are persisted
+      // Only persist progress — conversation resets each session
       partialize: (state) => ({
         philosophers: state.philosophers,
         collectedCards: state.collectedCards,
         exploredNodes: state.exploredNodes,
         chatCount: state.chatCount,
-        messages: state.messages,
-        turnCount: state.turnCount,
-        lastCardTurn: state.lastCardTurn,
-        recentMatchedNodes: state.recentMatchedNodes,
-        // Serialize Set as array for JSON storage
-        usedQuestions: [...state.usedQuestions] as any,
       }),
 
-      // Merge persisted state back, converting arrays to Sets
+      // Merge persisted progress back, all conversation fields stay default
       merge: (persisted: any, current) => {
         if (!persisted) return current;
         return {
           ...current,
-          ...persisted,
-          // Rehydrate Set from persisted array
-          usedQuestions: new Set<string>(
-            Array.isArray(persisted.usedQuestions)
-              ? persisted.usedQuestions
-              : [],
-          ),
-          // Ensure ephemeral fields stay at defaults
-          view: "sky" as AppView,
-          activePhilosopher: null,
-          input: "",
-          loading: false,
-          suggestedQs: [],
-          showThoughtMap: false,
-          showCardNodeId: null,
-          unlockNotif: null,
+          // Only restore progress fields
+          philosophers: persisted.philosophers ?? current.philosophers,
+          collectedCards: persisted.collectedCards ?? current.collectedCards,
+          exploredNodes: persisted.exploredNodes ?? current.exploredNodes,
+          chatCount: persisted.chatCount ?? current.chatCount,
           _hydrated: true,
         };
       },

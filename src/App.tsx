@@ -41,15 +41,14 @@ function AppInner() {
 
   const onStarClick = (p: PhilosopherMeta) => {
     store.setActivePhilosopher(p);
-    // Skip intro if resuming an existing conversation
-    if (store.messages.length > 0) {
-      store.setView("chat");
-    } else {
-      store.setView("intro");
-    }
+    // Always show intro page first
+    store.setView("intro");
   };
 
   const startChat = () => {
+    // Fresh conversation each time
+    store.setMessages([]);
+    store.setSuggestedQs([]);
     store.setView("chat");
   };
 
@@ -156,9 +155,7 @@ function AppInner() {
                 fontStyle: "italic",
               }}
             >
-              {store.messages.length > 0
-                ? "点击亮起的星辰，继续对话"
-                : "点击亮起的星辰，开始对话"}
+              点击亮起的星辰，开始对话
             </div>
             {/* Reset button — only show when there's progress */}
             {(progress.cards > 0 || progress.chats > 0) && (
