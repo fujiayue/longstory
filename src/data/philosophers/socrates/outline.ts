@@ -57,6 +57,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["朋友凯瑞丰去德尔菲问神谕的故事", "遍访雅典号称有智慧的人的经历"],
     avoidWhen: "当用户还在讲具体事件、情绪强烈时，不要急于把话题拉向抽象的「无知」讨论",
     commonMisuse: ["不要把「自知无知」讲成普通的谦虚美德"],
+    x: 50,
+    y: 8,
     card: {
       title: "德尔菲神谕",
       subtitle: "认识你自己",
@@ -118,6 +120,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["母亲费娜瑞特是助产士"],
     avoidWhen: "当用户明确在问一个事实性问题只需要简短回答时",
     commonMisuse: ["不要把反诘法变成刁难或抬杠"],
+    x: 74,
+    y: 20,
     card: {
       title: "苏格拉底反诘法",
       subtitle: "Elenchus",
@@ -172,6 +176,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["审判中反驳阿里斯托芬在喜剧《云》中的讽刺"],
     avoidWhen: "当用户在分享具体的学习经验时",
     commonMisuse: ["不要把它讲成反对一切教育和专业知识"],
+    x: 86,
+    y: 38,
     card: {
       title: "哲人与智者",
       subtitle: "谁是真正的老师",
@@ -228,6 +234,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: [],
     avoidWhen: "当用户刚讲完被人伤害的经历、情绪很强时",
     commonMisuse: ["不要把「德性即知识」讲成对恶行的道德开脱"],
+    x: 58,
+    y: 42,
     card: {
       title: "美德即知识",
       subtitle: "无人自愿作恶",
@@ -281,6 +289,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["审判中的申辩演说"],
     avoidWhen: "当用户在讨论非常具体的现实困境时",
     commonMisuse: ["不要把「灵魂的关怀」讲成反物质主义鸡汤"],
+    x: 24,
+    y: 36,
     card: {
       title: "灵魂的关怀",
       subtitle: "先检查皮革，再做鞋",
@@ -337,6 +347,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["审判当天的场景", "拒绝逃跑的决定"],
     avoidWhen: "当用户正在表达具体的生活困境时",
     commonMisuse: ["不要把它变成说教口号"],
+    x: 36,
+    y: 58,
     card: {
       title: "未经审视的人生",
       subtitle: "不值得过",
@@ -387,6 +399,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["审判中拒绝使用煽情修辞的开场白"],
     avoidWhen: "当用户正在练习表达自己的想法时",
     commonMisuse: ["不要把它讲成反对一切修辞"],
+    x: 72,
+    y: 60,
     card: {
       title: "真理与修辞",
       subtitle: "质朴即力量",
@@ -440,6 +454,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["审判中的牛虻隐喻"],
     avoidWhen: "当用户只是在表达个人困惑时",
     commonMisuse: ["不要把牛虻使命讲成精英主义"],
+    x: 84,
+    y: 78,
     card: {
       title: "牛虻使命",
       subtitle: "唤醒沉睡的城邦",
@@ -488,6 +504,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["会饮篇中转述蒂奥蒂玛的教导"],
     avoidWhen: "当用户正在讲一段现实恋爱纠纷时",
     commonMisuse: ["不要把它讲成抽象鸡汤"],
+    x: 18,
+    y: 74,
     card: {
       title: "爱的阶梯",
       subtitle: "从肉体到永恒",
@@ -538,6 +556,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["守护精灵是「不敬神」指控的原因之一"],
     avoidWhen: "当用户在谈论具体的宗教信仰时",
     commonMisuse: ["不要把守护精灵讲成超自然神秘体验"],
+    x: 48,
+    y: 90,
     card: {
       title: "守护精灵",
       subtitle: "只说「不」的神圣声音",
@@ -593,6 +613,8 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     biographicalRefs: ["被判死刑后的临别告白", "守护精灵在审判当天全程沉默"],
     avoidWhen: "当用户正在经历丧亲之痛时",
     commonMisuse: ["不要讲成看淡生死的鸡汤"],
+    x: 50,
+    y: 112,
     card: {
       title: "死亡的二元可能",
       subtitle: "安睡或远行",

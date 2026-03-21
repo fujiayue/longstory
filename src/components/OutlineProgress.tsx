@@ -1,13 +1,14 @@
-import { THOUGHT_OUTLINE } from "../data/philosophers/socrates";
+import type { ThoughtNode } from "../types";
 
 interface Props {
+  outline: ThoughtNode[];
   exploredNodes: string[];
 }
 
-export default function OutlineProgress({ exploredNodes }: Props) {
+export default function OutlineProgress({ outline, exploredNodes }: Props) {
   return (
     <div style={{ display: "flex", gap: 3, alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
-      {THOUGHT_OUTLINE.map((node) => {
+      {outline.map((node) => {
         const explored = exploredNodes.includes(node.id);
         return (
           <div

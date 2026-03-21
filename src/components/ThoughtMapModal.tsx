@@ -1,27 +1,12 @@
 import { useMemo } from "react";
-import type { ThoughtNode } from "../types";
-import { THOUGHT_OUTLINE } from "../data/philosophers/socrates";
-import { THOUGHT_LINEAGE_ORDER, LINEAGE_CONNECTIONS } from "../data/philosophers/socrates";
+import type { ThoughtNode, PhilosopherModule } from "../types";
 
 interface Props {
+  philosopher: PhilosopherModule;
   exploredNodes: string[];
   onClose: () => void;
   onNodeClick: (node: ThoughtNode) => void;
 }
-
-const POSITIONS = [
-  { id: "ignorance",           x: 50, y: 8,   idx: 0  },
-  { id: "elenchus",            x: 74, y: 20,  idx: 1  },
-  { id: "philosopher_sophist", x: 86, y: 38,  idx: 2  },
-  { id: "virtue",              x: 58, y: 42,  idx: 3  },
-  { id: "soul",                x: 24, y: 36,  idx: 4  },
-  { id: "examined",            x: 36, y: 58,  idx: 5  },
-  { id: "truth_rhetoric",      x: 72, y: 60,  idx: 6  },
-  { id: "gadfly",              x: 84, y: 78,  idx: 7  },
-  { id: "eros",                x: 18, y: 74,  idx: 8  },
-  { id: "daimonion",           x: 48, y: 90,  idx: 9  },
-  { id: "death",               x: 50, y: 112, idx: 10 },
-];
 
 function makeBgStars() {
   const stars: { x: number; y: number; r: number; opacity: number }[] = [];
@@ -40,12 +25,15 @@ function makeBgStars() {
   return stars;
 }
 
-export default function ThoughtMapModal({ exploredNodes, onClose, onNodeClick }: Props) {
+export default function ThoughtMapModal({ philosopher, exploredNodes, onClose, onNodeClick }: Props) {
+  const { outline, lineageConnections, lineageOrder, mapTitle, mapSubtitle } = philosopher;
+
   const nodeMap = useMemo(
-    () => Object.fromEntries(THOUGHT_OUTLINE.map((n) => [n.id, n])),
-    [],
+    () => Object.fromEntries(outline.map((n) => [n.id, n])),
+    [outline],
   );
   const bgStars = useMemo(makeBgStars, []);
+
   return (
     <div
       style={{
@@ -73,14 +61,14 @@ export default function ThoughtMapModal({ exploredNodes, onClose, onNodeClick }:
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
               <div style={{ fontSize: 10, color: "#F5C542", letterSpacing: "0.18em", fontWeight: 600, marginBottom: 3 }}>
-                ✦ 苏格拉底的思想脉络 ✦
+                ✦ {mapTitle} ✦
               </div>
               <div style={{ fontSize: 16, color: "#e0e0f0", fontFamily: "'Noto Serif SC',serif", fontWeight: 700 }}>
-                从无知到死亡
+                {mapSubtitle}
               </div>
             </div>
             <div style={{ fontSize: 11, color: "#555", background: "rgba(245,197,66,0.06)", padding: "4px 12px", borderRadius: 10, border: "1px solid rgba(245,197,66,0.1)" }}>
-              {exploredNodes.length}/{THOUGHT_LINEAGE_ORDER.length} 已探索
+              {exploredNodes.length}/{lineageOrder.length} 已探索
             </div>
           </div>
           <div style={{ fontSize: 11, color: "#555", marginTop: 8, lineHeight: 1.6 }}>
@@ -108,8 +96,9 @@ export default function ThoughtMapModal({ exploredNodes, onClose, onNodeClick }:
             ))}
 
             {/* Connections */}
-            {LINEAGE_CONNECTIONS.map(([ai, bi], i) => {
-              const a = POSITIONS[ai], b = POSITIONS[bi];
+            {lineageConnections.map(([ai, bi], i) => {
+              const a = outline[ai];
+              const b = outline[bi];
               if (!a || !b) return null;
               const aE = exploredNodes.includes(a.id);
               const bE = exploredNodes.includes(b.id);
@@ -127,45 +116,43 @@ export default function ThoughtMapModal({ exploredNodes, onClose, onNodeClick }:
             })}
 
             {/* Nodes */}
-            {POSITIONS.map((pos, idx) => {
-              const node = nodeMap[pos.id];
-              if (!node) return null;
-              const explored = exploredNodes.includes(pos.id);
+            {outline.map((node, idx) => {
+              const explored = exploredNodes.includes(node.id);
               const nr = explored ? 2.8 : 1.8;
               return (
-                <g key={pos.id}
+                <g key={node.id}
                   onClick={(e) => { e.stopPropagation(); onNodeClick(node); }}
                   style={{ cursor: "pointer" }}
                 >
                   {explored && (
                     <>
-                      <circle cx={pos.x} cy={pos.y} r={nr + 3} fill="none" stroke={node.color} strokeWidth="0.12" opacity="0.2">
+                      <circle cx={node.x} cy={node.y} r={nr + 3} fill="none" stroke={node.color} strokeWidth="0.12" opacity="0.2">
                         <animate attributeName="r" values={`${nr+3};${nr+5};${nr+3}`} dur="4s" repeatCount="indefinite" />
                         <animate attributeName="opacity" values="0.2;0.06;0.2" dur="4s" repeatCount="indefinite" />
                       </circle>
-                      <circle cx={pos.x} cy={pos.y} r={nr + 1.5} fill={node.color} opacity="0.06" />
+                      <circle cx={node.x} cy={node.y} r={nr + 1.5} fill={node.color} opacity="0.06" />
                     </>
                   )}
-                  <circle cx={pos.x} cy={pos.y} r={nr}
+                  <circle cx={node.x} cy={node.y} r={nr}
                     fill={explored ? node.color : "#222235"}
                     opacity={explored ? 1 : 0.6}
                     filter={explored ? "url(#nodeGlow)" : "none"}
                     stroke={explored ? node.color : "#333348"}
                     strokeWidth={explored ? "0.3" : "0.15"}
                   />
-                  <text x={pos.x} y={pos.y + (explored ? 1 : 0.7)} textAnchor="middle" fontSize={explored ? "2.4" : "1.8"} fontWeight="700" fontFamily="'Cormorant Garamond',serif" fill={explored ? "#0a0a18" : "#555"}>
+                  <text x={node.x} y={node.y + (explored ? 1 : 0.7)} textAnchor="middle" fontSize={explored ? "2.4" : "1.8"} fontWeight="700" fontFamily="'Cormorant Garamond',serif" fill={explored ? "#0a0a18" : "#555"}>
                     {idx + 1}
                   </text>
-                  <text x={pos.x} y={pos.y - nr - 1.8} textAnchor="middle" fontSize="3.2" opacity={explored ? 1 : 0.25}>
+                  <text x={node.x} y={node.y - nr - 1.8} textAnchor="middle" fontSize="3.2" opacity={explored ? 1 : 0.25}>
                     {node.icon}
                   </text>
-                  <text x={pos.x} y={pos.y + nr + 3.5} textAnchor="middle" fontSize="2.2" fontWeight="600" fontFamily="'Noto Serif SC',serif" fill={explored ? node.color : "#505065"}>
+                  <text x={node.x} y={node.y + nr + 3.5} textAnchor="middle" fontSize="2.2" fontWeight="600" fontFamily="'Noto Serif SC',serif" fill={explored ? node.color : "#505065"}>
                     {node.label}
                   </text>
-                  <text x={pos.x} y={pos.y + nr + 5.8} textAnchor="middle" fontSize="1.5" fontFamily="'Noto Serif SC',serif" fontStyle="italic" fill={explored ? "#7a7a95" : "#2e2e40"}>
+                  <text x={node.x} y={node.y + nr + 5.8} textAnchor="middle" fontSize="1.5" fontFamily="'Noto Serif SC',serif" fontStyle="italic" fill={explored ? "#7a7a95" : "#2e2e40"}>
                     {node.brief}
                   </text>
-                  <circle cx={pos.x} cy={pos.y} r="7" fill="transparent" />
+                  <circle cx={node.x} cy={node.y} r="7" fill="transparent" />
                 </g>
               );
             })}

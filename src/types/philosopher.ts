@@ -18,6 +18,8 @@ export interface PhilosopherMeta {
   requireCards?: number;
   /** Number of chat turns required to unlock */
   requireChats?: number;
+  /** 'active' = has content; 'coming-soon' = future batch, ghost display */
+  status?: 'active' | 'coming-soon';
 }
 
 /** A pair of philosopher IDs that form a constellation line */
@@ -31,6 +33,14 @@ export interface PhilosopherModule {
   lineageConnections: [number, number][];
   translations: TranslationFragment[];
   deepFrameworks: Record<string, string>;
+  /** Opening message shown when chat starts fresh */
+  greeting: string;
+  /** Thought map modal header title */
+  mapTitle: string;
+  /** Thought map modal header subtitle */
+  mapSubtitle: string;
+  /** Initial suggested questions shown at start of conversation */
+  initQuestions: string[];
   basePrompt: string;
   buildPrompt: (
     userMsg: string,

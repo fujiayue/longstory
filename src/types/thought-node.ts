@@ -45,6 +45,9 @@ export interface ThoughtNode {
   biographicalRefs: string[];
   avoidWhen: string;
   commonMisuse: string[];
+  /** Position in this philosopher's thought map (viewBox 0 0 100 130) */
+  x: number;
+  y: number;
   card: KnowledgeCard;
 }
 

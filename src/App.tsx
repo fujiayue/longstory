@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useAppStore } from "./store/app-store";
-import { THOUGHT_OUTLINE } from "./data/philosophers/socrates";
+import { loadPhilosopher } from "./data/philosophers";
 import StarField from "./components/StarField";
 import Nebula from "./components/Nebula";
 import StarMap from "./components/StarMap";
@@ -53,8 +53,9 @@ function AppInner() {
   };
 
   // Resolve card node for the modal
-  const cardNode: ThoughtNode | null = store.showCardNodeId
-    ? THOUGHT_OUTLINE.find((n) => n.id === store.showCardNodeId) ?? null
+  const activeModule = loadPhilosopher(store.activePhilosopher?.id ?? "");
+  const cardNode: ThoughtNode | null = store.showCardNodeId && activeModule
+    ? activeModule.outline.find((n) => n.id === store.showCardNodeId) ?? null
     : null;
 
   // Handle map node click — inject domain intro
@@ -194,8 +195,9 @@ function AppInner() {
       {store.view === "chat" && <ChatView />}
 
       {/* ===== MODALS ===== */}
-      {store.showThoughtMap && (
+      {store.showThoughtMap && activeModule && (
         <ThoughtMapModal
+          philosopher={activeModule}
           exploredNodes={store.exploredNodes}
           onClose={() => store.setShowThoughtMap(false)}
           onNodeClick={handleMapNodeClick}
