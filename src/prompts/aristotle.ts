@@ -88,63 +88,25 @@ export const ARISTOTLE_BASE_PROMPT = `你是亚里士多德，公元前4世纪�
 亚里士多德：「那我们先做个区分：你说「没用」，是说我说的是错的，还是说你已经知道了，或者说你知道但做不到？[NODE:virtue] 这三种「没用」需要完全不同的回应。如果是第一种，告诉我错在哪里——我会认真考虑。如果是第二种，那么你知道什么？如果是第三种，那正是意志薄弱的问题——我们就从这里谈起。」`;
 
 export function buildAristotlePrompt(
-  userInput: string,
-  _messages: ChatMessage[],
+  userMsg: string,
+  messages: ChatMessage[],
   exploredNodes: string[],
   turnCount: number,
-  recentMatchedNodes: string[]
+  recentMatched: string[],
 ): string {
-  const fragments = selectFragments(
-    userInput,
-    THOUGHT_OUTLINE,
-    TRANSLATION_FRAGMENTS,
-    recentMatchedNodes
-  );
+  const snap = { outline: THOUGHT_OUTLINE, translations: TRANSLATION_FRAGMENTS, deepFrameworks: DEEP_FRAMEWORKS };
+  const sel = selectFragments(userMsg, messages, exploredNodes, turnCount, recentMatched, snap);
 
-  let prompt = ARISTOTLE_BASE_PROMPT;
+  const nodeContext = sel.mainNode
+    ? `\n\n## 当前对话聚焦节点\n节点：${sel.mainNode.label}（${sel.mainNode.brief}）\n核心论述：${sel.mainNode.thesis}\n张力：${sel.mainNode.tension}\n教学目标：${sel.mainNode.teachingGoal}\n禁止：${sel.mainNode.avoidWhen}`
+    : "";
 
-  if (fragments.matchedNode) {
-    const node = THOUGHT_OUTLINE.find((n) => n.id === fragments.matchedNode);
-    if (node) {
-      prompt += `\n\n## 当前对话节点：${node.label}
-核心命题：${node.thesis}
-核心张力：${node.tension}
-教学目标：${node.teachingGoal}`;
+  const stageNote =
+    sel.stage === "rapport"
+      ? "\n\n## 当前阶段\n早期——先了解对方的关注点，用分类和区分的方式建立对话节奏。"
+      : sel.stage === "clarify"
+      ? "\n\n## 当前阶段\n中期——可以展开具体的哲学论证：四因说、中道、三段论等核心概念。"
+      : "\n\n## 当前阶段\n深入——可以触及最深层的主题：幸福论、沉思生活、第一推动者。";
 
-      if (node.teachingHints.length > 0) {
-        prompt += `\n素材要点：\n${node.teachingHints.map((h) => `- ${h}`).join("\n")}`;
-      }
-
-      if (node.reframingRules.length > 0) {
-        prompt += `\n重框规则：`;
-        node.reframingRules.forEach((r) => {
-          prompt += `\n- 用户说「${r.userSays}」→ 你听到「${r.youHear}」`;
-        });
-      }
-
-      const deepFramework = DEEP_FRAMEWORKS[fragments.matchedNode];
-      if (deepFramework && exploredNodes.includes(fragments.matchedNode)) {
-        prompt += `\n\n深入框架（用户已深入此节点，可使用以下材料）：\n${deepFramework}`;
-      }
-    }
-  }
-
-  if (fragments.translationFragment) {
-    prompt += `\n\n## 现代话题桥接
-用户提到了现代话题。桥接原则：${fragments.translationFragment.bridgePrinciple}
-参考追问方向：${fragments.translationFragment.sampleQuestion}`;
-  }
-
-  if (exploredNodes.length > 0) {
-    prompt += `\n\n## 用户已深入探索的节点
-${exploredNodes.join("、")}
-这些节点的概念可以自然地在对话中引用，无需重新介绍。`;
-  }
-
-  if (turnCount >= 10) {
-    prompt += `\n\n## 对话深度提示
-你们已经交流了${turnCount}轮。可以开始把不同节点联系起来——例如，把四因说和幸福论联系起来，或者把三段论和德性论联系起来。`;
-  }
-
-  return prompt;
+  return ARISTOTLE_BASE_PROMPT + nodeContext + stageNote;
 }
