@@ -19,22 +19,22 @@ function AppInner() {
     [store.collectedCards.length, store.chatCount],
   );
 
-  // Check Plato unlock
+  // Check unlock conditions for all locked philosophers
   useEffect(() => {
-    const plato = store.philosophers.find((p) => p.id === "plato");
-    if (
-      plato &&
-      !plato.unlocked &&
-      progress.cards >= (plato.requireCards ?? 99) &&
-      progress.chats >= (plato.requireChats ?? 99)
-    ) {
-      store.setPhilosophers((prev) =>
-        prev.map((p) => (p.id === "plato" ? { ...p, unlocked: true } : p)),
-      );
-      setTimeout(
-        () => store.setUnlockNotif({ ...plato, unlocked: true }),
-        600,
-      );
+    for (const p of store.philosophers) {
+      if (p.unlocked || !p.requireCards || !p.requireChats) continue;
+      if (
+        progress.cards >= p.requireCards &&
+        progress.chats >= p.requireChats
+      ) {
+        store.setPhilosophers((prev) =>
+          prev.map((x) => (x.id === p.id ? { ...x, unlocked: true } : x)),
+        );
+        setTimeout(
+          () => store.setUnlockNotif({ ...p, unlocked: true }),
+          600,
+        );
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress.cards, progress.chats]);
