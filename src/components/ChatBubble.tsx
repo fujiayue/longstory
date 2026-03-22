@@ -1,10 +1,13 @@
-import type { ChatMessage } from "../types";
+import type { ChatMessage, PhilosopherMeta } from "../types";
 
 interface Props {
   msg: ChatMessage;
+  philosopher?: PhilosopherMeta | null;
 }
 
-export default function ChatBubble({ msg }: Props) {
+export default function ChatBubble({ msg, philosopher }: Props) {
+  const avatarChar = philosopher?.avatar ?? "✦";
+  const avatarColor = philosopher?.color ?? "#F5C542";
   const isUser = msg.role === "user";
 
   if (msg.isCoordinate) {
@@ -35,7 +38,7 @@ export default function ChatBubble({ msg }: Props) {
             width: 36,
             height: 36,
             borderRadius: "50%",
-            background: "linear-gradient(140deg,#F5C542,#C89520)",
+            background: `linear-gradient(140deg,${avatarColor},${avatarColor}88)`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -45,10 +48,10 @@ export default function ChatBubble({ msg }: Props) {
             fontFamily: "serif",
             color: "#0f0f1e",
             fontWeight: 700,
-            boxShadow: "0 0 16px rgba(245,197,66,0.2)",
+            boxShadow: `0 0 16px ${avatarColor}33`,
           }}
         >
-          Σ
+          {avatarChar}
         </div>
       )}
       <div
