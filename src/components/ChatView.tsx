@@ -323,7 +323,7 @@ export default function ChatView() {
       {/* Messages */}
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 8px", maxWidth: 680, width: "100%", margin: "0 auto" }}>
         {store.messages.map((m, i) => (
-          <ChatBubble key={i} msg={m} />
+          <ChatBubble key={i} msg={m} philosopher={store.activePhilosopher} />
         ))}
         <div ref={chatEndRef} />
       </div>

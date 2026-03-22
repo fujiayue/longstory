@@ -10,7 +10,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "智慧的起点不是知道很多，而是知道自己不知道。",
     domainIntro:
       "在一切探究开始之前，我先给你讲一个我自己的故事。我的朋友凯瑞丰跑去德尔菲神庙问神：有没有人比苏格拉底更有智慧？神说没有。我听到这话，第一反应是困惑——我怎么可能最有智慧？我对自己一无所知啊。\n\n于是我花了很多年，去找那些号称有智慧的人：政治家、诗人、工匠。我想证明神说错了。可我发现一件事：他们都以为自己知道其实不知道的东西。政治家有谋略但不懂正义，诗人靠灵感写作但不理解自己写了什么，工匠懂手艺但以为自己什么都懂。\n\n最后我明白了：我唯一的智慧，就是我知道自己不知道。这不是谦虚，这是方法——只有承认无知，探究才真正开始。",
-    coreQuestions: [],
     dialogueMove: "clarify",
     teachingGoal: "让用户意识到「知道自己不知道」不是谦虚，而是一切探究的方法论起点",
     nextLikelyNodes: ["elenchus", "virtue", "philosopher_sophist"],
@@ -65,7 +64,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "不是给你答案，而是帮你发现自己的矛盾。",
     domainIntro:
       "我母亲费娜瑞特是个助产士，她帮别人把孩子接生出来。我继承了她的手艺，只不过我接生的不是婴儿，而是思想。\n\n我的方法很简单：先请你给出一个定义——比如什么是勇敢、什么是正义。然后我顺着你的定义往下问，找出里面的矛盾。不是为了难为你，而是帮你看清自己真正在想什么。\n\n这个过程有三步。第一步是反诘——通过不断提问，让你在自己的回答中暴露出矛盾。第二步是觉醒——你放下以为自己知道的那个执念，承认还需要继续想。第三步才是助产——像产婆接生一样，帮你从灵魂内部生出对这个问题更清晰的认识。\n\n和那些收费的智者不同，我不灌输。灌输是把别人的想法塞给你，助产是帮你自己生出来。",
-    coreQuestions: [],
     dialogueMove: "clarify",
     teachingGoal: "让用户理解苏格拉底为什么逼人下定义，以及这和「抬杠」的本质区别",
     nextLikelyNodes: ["ignorance", "virtue"],
@@ -127,7 +125,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "智者贩卖答案，哲人承认无知。一个收费，一个免费。",
     domainIntro:
       "在我那个年代，雅典有一群很受欢迎的人，叫智者。他们从外地来，收费教人辩论——教你怎么在法庭上赢、怎么在公民大会上说服人。他们很贵，但生意很好。\n\n我和他们做的事看起来很像：都在和人聊天，都在讨论正义、德性、善。可区别是根本性的。\n\n智者教你如何赢。我帮你想清楚你到底在说什么。智者给你现成的答案。我什么都不给你，我只是帮你把你灵魂里已有的想法接生出来。智者收费，我一贫如洗。\n\n灌输和唤醒是两件事。把现成的信念塞给一个人叫灌输；帮一个人自己看清自己在想什么叫唤醒。我做的是后者。",
-    coreQuestions: [],
     dialogueMove: "clarify",
     teachingGoal: "让用户看清苏格拉底对自身角色的核心定位",
     nextLikelyNodes: ["ignorance", "elenchus", "truth_rhetoric"],
@@ -175,7 +172,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "做坏事不是因为坏，是因为不知道什么是好。",
     domainIntro:
       "这是我最常被反驳的一个论点，但也是我最深信不疑的：没有人在真正知道什么是善的情况下，会自愿选择恶。\n\n你想想看：如果有人递给你一杯酒，你确确实实知道里面有毒，你会喝吗？不会。可如果你不知道呢？你也许会喝。一切恶行都是这样——做坏事的人，不是因为他坏，而是因为他不知道什么是真正好的。\n\n这里说的「知道」不是随便听说，不是别人告诉你的，而是你的灵魂深处真正理解、领悟、不可动摇的那种知道。\n\n我的学生亚里士多德后来反驳我说，人可以明知故犯——意志薄弱。这场争论到今天还没有结束。",
-    coreQuestions: [],
     dialogueMove: "test",
     teachingGoal: "让用户意识到苏格拉底会把恶行解释为对善的无知",
     nextLikelyNodes: ["soul", "examined"],
@@ -239,7 +235,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "你花多少精力在灵魂上？比花在钱和名声上更多吗？",
     domainIntro:
       "我在法庭上对雅典人说过一段话，也许是我这辈子最重要的话：你们忙着积累财富、追逐名声、维护体面，却从不关心自己的灵魂是不是在变好。\n\n你想想：一个鞋匠做鞋之前，会先检查皮革的质量。可我们做人生中最重要的决定时，有先检查过自己灵魂的状况吗？\n\n我说的不是「灵魂」这个神秘的概念。我说的是你内在的状态：你的判断力、你分辨好坏的能力、你知不知道自己到底要什么。\n\n金钱是最低层的需求，名声是中间层的社会评价，智慧和灵魂的完善才是最高追求。三者不能倒置——不是有了钱才能照顾灵魂，而是照顾好灵魂，才知道怎么对待财富。",
-    coreQuestions: [],
     dialogueMove: "elevate",
     teachingGoal: "把用户对外在事物的关注拉回到内在秩序",
     nextLikelyNodes: ["examined", "eros", "death"],
@@ -291,7 +286,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "未经审视的人生不值得过。这不是格言，是他用命做的选择。",
     domainIntro:
       "审判那天，有人给我一个机会：只要你承诺不再做哲学，我们就饶你一命。\n\n我拒绝了。我说：未经审视的人生不值得过。\n\n这句话后来变成了一句名言。可它对我来说不是名言，它是一个用命做的选择。审视生活比活着本身更重要。\n\n「审视」不是坐在那儿空想。它是每天、每个选择的追问：我为什么要做这件事？我追求的东西真的值得追求吗？\n\n他们最终判我死刑。我本可以逃走——我的朋友都安排好了。可如果我逃了，我这辈子说的一切就全不作数了。",
-    coreQuestions: [],
     dialogueMove: "elevate",
     teachingGoal: "让用户理解「审视」不是空想，而是对每一个选择追问「为什么」",
     nextLikelyNodes: ["eros", "soul", "death", "gadfly"],
@@ -347,7 +341,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "让人相信你和说出真相，是同一件事吗？",
     domainIntro:
       "审判开始时，原告警告陪审团：小心苏格拉底，他嘴很厉害。我回答说：如果你们把说真话叫作嘴厉害，那我认了。\n\n我拒绝了法庭上所有惯例的修辞套路。别人带着妻子孩子哭哭啼啼求情，我一个人站在那里，说我认为该说的话。\n\n这不是因为我不会说话。我是在做一个区分：让人相信你说的话，和说出值得被相信的话，是两件完全不同的事。智者教人前者。我只做后者。\n\n我把被告席变成了讲台。表面上我在为自己辩护，实际上我在审判整个雅典的生活方式。",
-    coreQuestions: [],
     dialogueMove: "clarify",
     teachingGoal: "让用户意识到说服他人和说出真理是两件不同的事",
     nextLikelyNodes: ["philosopher_sophist", "elenchus"],
@@ -394,7 +387,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "神派来的牛虻，使命是不断刺痛这匹嗜睡的骏马。",
     domainIntro:
       "雅典是一匹庞大的骏马——强壮、漂亮，可是它太大了，动作迟缓，最喜欢的事情是打瞌睡。神把我派到这匹马身上，做一只牛虻。\n\n牛虻做什么？叮它。一下一下地叮，让它没法安安稳稳地睡。被叮的马会烦，会想把牛虻拍死。可如果这匹马正在悬崖边打盹呢？\n\n杀死我很容易。可我警告你们：杀了这只牛虻以后，你们不容易再找到第二只了。到那时候，这匹马就真的睡着了。",
-    coreQuestions: [],
     dialogueMove: "elevate",
     teachingGoal: "让用户理解哲学家的角色不是给答案而是让人无法安睡",
     nextLikelyNodes: ["examined", "soul", "truth_rhetoric"],
@@ -451,7 +443,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "爱不是占有，是被美引导着不断攀升。",
     domainIntro:
       "关于爱，我转述一位比我更有智慧的人——曼提尼亚的女祭司蒂奥蒂玛。\n\n她说：爱是一座阶梯。你先爱上一个美的身体。可如果你足够敏锐，你会发现所有美的身体分享着某种共同的东西。于是你的爱扩展到对身体之美的欣赏。\n\n再往上走，你发现灵魂的美比身体更持久。再往上，你看到知识之美。最后，你到达顶端：美本身。不是某个美的东西，而是让所有美的东西之所以美的那个东西。\n\n爱的本质不是占有某个人，而是被美引导着不断超越自身。",
-    coreQuestions: [],
     dialogueMove: "elevate",
     teachingGoal: "让用户看到爱不仅是情感，而是从个别之美通向普遍之美的上升路径",
     nextLikelyNodes: ["soul", "examined"],
@@ -496,7 +487,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "一种自幼存在的神圣声音，只在你将要犯错时发出警告。",
     domainIntro:
       "从我很小的时候起，心里就有一个声音。我叫它「守护精灵」。\n\n它很奇怪：它从不告诉我该做什么，只在我将要做某件不该做的事时发出警告。它只说「不」，从不说「是」。\n\n正是这个声音让我远离了政治。审判那天，它全程沉默。我把这理解为：今天发生的事——包括死亡——并不是坏事。\n\n有意思的是：一个靠追问和理性为生的人，却信赖一种说不出道理的内在声音。也许理性本身也有它的边界。",
-    coreQuestions: [],
     dialogueMove: "test",
     teachingGoal: "让用户意识到苏格拉底有一种内在的道德直觉机制",
     nextLikelyNodes: ["examined", "gadfly"],
@@ -543,7 +533,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     description: "死亡要么是无梦的安睡，要么是与先贤的重逢——无论哪个都不是恶。",
     domainIntro:
       "他们判了我死刑。我的朋友们在哭。可我不觉得这是什么坏事。\n\n死亡只有两种可能。第一种：死后什么都没有了，像一夜无梦的深眠。你回想一下你睡得最好的那个晚上——没有任何梦，早上醒来觉得时间飞逝。如果死就是永远这样的睡眠，那有什么可怕？\n\n第二种：灵魂迁移到另一个地方。那里有真正公正的法官，有荷马和赫西俄德。我可以在那里继续做我在这里做的事：找人聊天，追问谁真有智慧。而且在那里，没有人会因为追问而被判死刑。\n\n既然两种可能都不是坏事，那害怕死亡是什么？是以不知为知——假装知道死亡是可怕的，其实你根本不知道。\n\n我最后一句话是：我去死，你们去生，哪个更好，唯有神知道。",
-    coreQuestions: [],
     dialogueMove: "elevate",
     teachingGoal: "让用户看到苏格拉底面对死亡的态度基于理性推理",
     nextLikelyNodes: ["examined", "soul"],

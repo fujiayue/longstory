@@ -1,7 +1,7 @@
 export const MAP_TRIGGER_SENTINEL = "__OPEN_THOUGHT_MAP__";
 
 export function getMapTriggerLabel(turnCount: number): string {
-  if (turnCount <= 2) return "你被判死刑，到底是因为什么？";
+  if (turnCount <= 2) return "你的思想体系是什么？";
   if (turnCount <= 6) return "你的这些想法，彼此之间有联系吗？";
   return "你刚才说的这些，在你的整个思想里是什么位置？";
 }
