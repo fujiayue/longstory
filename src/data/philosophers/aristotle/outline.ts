@@ -73,7 +73,7 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     dialogueMove: "clarify",
     teachingGoal: "让用户质疑柏拉图式的「理想 vs 现实」二分，认识到事物的本质就在事物本身之中",
     nextLikelyNodes: ["potentiality", "psyche", "four_causes"],
-    keywords: ["形式", "质料", "本质", "理念", "柏拉图", "分离", "统一", "物质", "形状", "结构", "本体", “实体”, "理想"],
+    keywords: ["形式", "质料", "本质", "理念", "柏拉图", "分离", "统一", "物质", "形状", "结构", "本体", "实体", "理想"],
     macroQs: [
       "什么是“实体”？",
       "世界真的是由什么构成的？",
@@ -129,7 +129,7 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     dialogueMove: "elevate",
     teachingGoal: "让用户用「成为」而非「是」来理解自己——你不只是现在这个状态，你还是所有你有潜力成为的",
     nextLikelyNodes: ["eudaimonia", "prime_mover", "hylomorphism"],
-    keywords: [“潜能”, "实现", "可能", "发展", "成长", "改变", "运动", "变化", "潜力", "发挥", "完成", "成为", "能力"],
+    keywords: ["潜能", "实现", "可能", "发展", "成长", "改变", "运动", "变化", "潜力", "发挥", "完成", "成为", "能力"],
     macroQs: [
       "世界上的万事万物为什么会运动和变化？",
       "时间到底是什么？",

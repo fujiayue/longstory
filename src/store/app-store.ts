@@ -196,10 +196,18 @@ export const useAppStore = create<AppState>()(
       // Merge persisted progress back, all conversation fields stay default
       merge: (persisted: any, current) => {
         if (!persisted) return current;
+        // Merge philosophers: use code definitions as base, only restore unlocked status from persisted
+        const unlockedSet = new Set(
+          (persisted.philosophers ?? [])
+            .filter((p: any) => p.unlocked)
+            .map((p: any) => p.id),
+        );
+        const mergedPhilosophers = current.philosophers.map((p) =>
+          unlockedSet.has(p.id) ? { ...p, unlocked: true } : p,
+        );
         return {
           ...current,
-          // Only restore progress fields
-          philosophers: persisted.philosophers ?? current.philosophers,
+          philosophers: mergedPhilosophers,
           collectedCards: persisted.collectedCards ?? current.collectedCards,
           exploredNodes: persisted.exploredNodes ?? current.exploredNodes,
           chatCount: persisted.chatCount ?? current.chatCount,

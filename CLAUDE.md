@@ -28,6 +28,18 @@
 - **数据与 UI 分离**：`components/` 不直接 import `data/`，通过 props 或 store 获取
 - **API Key**：绝不出现在任何前端文件、日志、响应体中
 
+## 新建哲学家模块必做清单
+
+每次开发新哲学家时，以下步骤**全部完成**才算模块完成，不得遗漏：
+
+1. **数据文件**：outline.ts / lineage.ts / translations.ts / frameworks.ts / module.ts / index.ts / answers.ts
+2. **Prompt 文件**：`src/prompts/{id}.ts`（basePrompt + buildPrompt）
+3. **注册模块**：`src/data/philosophers/index.ts` 中添加 module + presetAnswer
+4. **解锁条件**：`src/data/philosophers-meta.ts` 中设置 `requireCards` 和 `requireChats`（通用解锁循环自动生效，无需改 App.tsx）
+5. **中文引号**：字符串中的中文内层引号使用全角 `""` ，不得使用 ASCII `"` 作为内层引号
+6. **类型检查**：`tsc --noEmit` 零错误
+7. **文档同步**：2K.md + project.md + PD.md（如涉及功能变更）
+
 ## 验证规则
 
 - 每个 MVP 功能完成后必须提供验证清单，等用户确认通过后才提交 Git
