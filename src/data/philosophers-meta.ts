@@ -4,7 +4,7 @@ export const PHILOSOPHERS: PhilosopherMeta[] = [
   // ── Phase 1: 已有内容或正在制作 ─────────────────────────────
   { id: "socrates",  name: "苏格拉底", en: "Socrates",  era: "469–399 BC",  x: 50, y: 38, unlocked: true,  avatar: "Σ", color: "#F5C542", brief: "古希腊哲学之父，以反诘法闻名于世", status: "active" },
   { id: "plato",     name: "柏拉图",   en: "Plato",     era: "428–348 BC",  x: 35, y: 24, unlocked: false, avatar: "Π", color: "#7EB8DA", brief: "理念论的创立者",        status: "active", requireCards: 2, requireChats: 6 },
-  { id: "aristotle", name: "亚里士多德", en: "Aristotle", era: "384–322 BC", x: 20, y: 40, unlocked: false, avatar: "Α", color: "#A8D5A2", brief: "逻辑学之父",            status: "active" },
+  { id: "aristotle", name: "亚里士多德", en: "Aristotle", era: "384–322 BC", x: 20, y: 40, unlocked: false, avatar: "Α", color: "#A8D5A2", brief: "逻辑学之父，柏拉图的批评者", status: "active", requireCards: 2, requireChats: 6 },
   { id: "epicurus",  name: "伊壁鸠鲁", en: "Epicurus",  era: "341–270 BC",  x: 66, y: 20, unlocked: false, avatar: "Ε", color: "#E8A87C", brief: "快乐主义哲学",          status: "active" },
   { id: "zeno",      name: "芝诺",     en: "Zeno",      era: "334–262 BC",  x: 76, y: 42, unlocked: false, avatar: "Ζ", color: "#B8B8D1", brief: "斯多葛学派创始人",     status: "active" },
   { id: "augustine", name: "奥古斯丁", en: "Augustine", era: "354–430",     x: 40, y: 56, unlocked: false, avatar: "A", color: "#D4A5C9", brief: "基督教哲学奠基者",     status: "active" },
