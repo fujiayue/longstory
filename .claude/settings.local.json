@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(node -e \":*)",
+      "Bash(gh pr:*)",
+      "Bash(where gh:*)",
+      "Bash(where.exe gh:*)"
+    ]
+  }
+}
