@@ -61,6 +61,10 @@ export interface AppState {
   usedQuestions: Set<string>;
   markQuestionUsed: (q: string) => void;
 
+  // Node hit counts (session-level, for three-state card trigger)
+  nodeHitCounts: Record<string, number>;
+  incrementNodeHit: (nodeId: string) => void;
+
   // Modals
   showThoughtMap: boolean;
   setShowThoughtMap: (v: boolean) => void;
@@ -133,6 +137,15 @@ export const useAppStore = create<AppState>()(
       markQuestionUsed: (q) =>
         set((s) => ({ usedQuestions: new Set([...s.usedQuestions, q]) })),
 
+      // Node hit counts (session-level)
+      nodeHitCounts: {},
+      incrementNodeHit: (nodeId) =>
+        set((s) => ({
+          nodeHitCounts: {
+            ...s.nodeHitCounts,
+            [nodeId]: (s.nodeHitCounts[nodeId] || 0) + 1,
+          },
+        })),
       // Modals
       showThoughtMap: false,
       setShowThoughtMap: (v) => set({ showThoughtMap: v }),
@@ -156,6 +169,7 @@ export const useAppStore = create<AppState>()(
           suggestedQs: [],
           view: "sky" as AppView,
           activePhilosopher: null,
+          nodeHitCounts: {},
         }),
 
       // Hydration tracking

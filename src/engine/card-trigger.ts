@@ -2,44 +2,43 @@ import type { ThoughtNode } from "../types";
 
 interface CardTriggerOpts {
   matchedNodeId: string | null;
+  nodeHitCounts: Record<string, number>;
   exploredNodes: string[];
-  turnCount: number;
-  lastCardTurn: number;
   outline: ThoughtNode[];
 }
 
 interface CardTriggerResult {
-  /** Should we show the card modal? */
   showCard: boolean;
-  /** Should we mark the node as explored (even without showing card)? */
+  showTouchNotice: boolean;
   markExplored: boolean;
-  /** The node to show, if any */
   node: ThoughtNode | null;
+  hitCount: number;
 }
 
 /**
- * Decides whether to pop a knowledge card based on conversation state.
- * Card only shows if: node is new, turn >= 3, and at least 3 turns since last card.
+ * Three-state card trigger:
+ * - hitCount 1   → "已触及" → show touch notice, node lights up in map
+ * - hitCount 2   → building up, no action
+ * - hitCount 3+  → "已深入" → show full card, mark explored, collect card
+ * - already explored → no action
  */
 export function evaluateCardTrigger(opts: CardTriggerOpts): CardTriggerResult {
-  const { matchedNodeId, exploredNodes, turnCount, lastCardTurn, outline } = opts;
+  const { matchedNodeId, nodeHitCounts, exploredNodes, outline } = opts;
+  const empty: CardTriggerResult = { showCard: false, showTouchNotice: false, markExplored: false, node: null, hitCount: 0 };
 
-  if (!matchedNodeId || exploredNodes.includes(matchedNodeId)) {
-    return { showCard: false, markExplored: false, node: null };
-  }
+  if (!matchedNodeId) return empty;
 
   const node = outline.find((n) => n.id === matchedNodeId) ?? null;
-  if (!node) {
-    return { showCard: false, markExplored: false, node: null };
+  if (!node) return empty;
+
+  // +1 because we haven't incremented yet when this is called
+  const hitCount = (nodeHitCounts[matchedNodeId] || 0) + 1;
+
+  // Already fully explored → no action
+  if (exploredNodes.includes(matchedNodeId)) {
+    return { ...empty, node, hitCount };
   }
 
-  // Always mark as explored after turn 3
-  if (turnCount < 3) {
-    return { showCard: false, markExplored: false, node: null };
-  }
-
-  // Show card only if enough gap since last card
-  const showCard = turnCount - lastCardTurn >= 3;
-
-  return { showCard, markExplored: true, node };
+  // First touch → show card directly and mark explored
+  return { showCard: true, showTouchNotice: false, markExplored: true, node, hitCount };
 }

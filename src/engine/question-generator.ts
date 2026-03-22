@@ -3,11 +3,18 @@ import type { ThoughtNode, DialogueStage } from "../types";
 function pickPoolByStage(
   node: ThoughtNode,
   stage: DialogueStage,
+  touched: boolean,
 ): string[] {
+  // If node has been touched, prefer deeper questions
+  if (touched) {
+    if (stage === "rapport" || stage === "clarify")
+      return [...(node.microQs || []), ...(node.macroQs || [])];
+    return node.microQs || [];
+  }
+  // Untouched nodes: early stages show macro, later stages show micro
   if (stage === "rapport") return node.macroQs || [];
-  if (stage === "clarify") return [...(node.midQs || []), ...(node.macroQs || [])];
-  if (stage === "test") return [...(node.midQs || []), ...(node.microQs || [])];
-  return [...(node.microQs || []), ...(node.midQs || [])];
+  if (stage === "clarify") return [...(node.macroQs || []), ...(node.microQs || [])];
+  return [...(node.microQs || []), ...(node.macroQs || [])];
 }
 
 interface SuggestOpts {
@@ -16,8 +23,8 @@ interface SuggestOpts {
   focusTerm: string | null;
   exploredNodes: string[];
   usedQuestions: Set<string>;
-  hitKeywords: string[];
   allNodes: ThoughtNode[];
+  nodeHitCounts: Record<string, number>;
 }
 
 export function getSuggestedQuestions(opts: SuggestOpts): string[] {
@@ -27,29 +34,19 @@ export function getSuggestedQuestions(opts: SuggestOpts): string[] {
     focusTerm,
     exploredNodes,
     usedQuestions,
-    hitKeywords,
     allNodes,
+    nodeHitCounts,
   } = opts;
+
+  const isTouched = (nodeId: string) => (nodeHitCounts[nodeId] || 0) > 0;
 
   const questions: string[] = [];
   const dedupe = (q: string) =>
     q && !questions.includes(q) && !usedQuestions.has(q);
 
-  // 1. Bridge template from keywords
-  if (mainNode?.bridgeTemplates && hitKeywords?.length > 0) {
-    const kw = hitKeywords.sort((a, b) => b.length - a.length)[0];
-    for (const tpl of mainNode.bridgeTemplates) {
-      const bq = tpl.replace("{keyword}", kw);
-      if (dedupe(bq)) {
-        questions.push(bq);
-        break;
-      }
-    }
-  }
-
-  // 2. From current node's pool
+  // 1. From current node's pool
   if (mainNode && questions.length < 2) {
-    const pool = pickPoolByStage(mainNode, stage).filter(
+    const pool = pickPoolByStage(mainNode, stage, isTouched(mainNode.id)).filter(
       (q) => !usedQuestions.has(q) && !questions.includes(q),
     );
     const picked =
@@ -64,10 +61,10 @@ export function getSuggestedQuestions(opts: SuggestOpts): string[] {
     for (const nid of mainNode.nextLikelyNodes) {
       const nn = allNodes.find((n) => n.id === nid);
       if (!nn) continue;
-      const bp =
-        stage === "deepen"
-          ? [...(nn.midQs || []), ...(nn.macroQs || [])]
-          : [...(nn.macroQs || []), ...(nn.midQs || [])];
+      const nnTouched = isTouched(nn.id);
+      const bp = nnTouched
+        ? [...(nn.microQs || []), ...(nn.macroQs || [])]
+        : [...(nn.macroQs || []), ...(nn.microQs || [])];
       const bq = bp.find(
         (q) => !usedQuestions.has(q) && !questions.includes(q),
       );
@@ -82,7 +79,6 @@ export function getSuggestedQuestions(opts: SuggestOpts): string[] {
   if (questions.length < 3 && mainNode) {
     const ap = [
       ...(mainNode.macroQs || []),
-      ...(mainNode.midQs || []),
       ...(mainNode.microQs || []),
     ].filter((q) => !usedQuestions.has(q) && !questions.includes(q));
     for (const q of ap) {
@@ -91,12 +87,19 @@ export function getSuggestedQuestions(opts: SuggestOpts): string[] {
     }
   }
 
-  // 5. Last-resort: unexplored nodes
-  if (questions.length === 0) {
-    const ux = allNodes.filter((n) => !exploredNodes.includes(n.id));
-    for (const n of ux.slice(0, 3)) {
-      const q = (n.macroQs || [])[0];
-      if (q && !usedQuestions.has(q)) questions.push(q);
+  // 5. Fill from other nodes (prefer unexplored, then explored)
+  if (questions.length < 3) {
+    const unexplored = allNodes.filter((n) => !exploredNodes.includes(n.id) && n.id !== mainNode?.id);
+    const explored = allNodes.filter((n) => exploredNodes.includes(n.id) && n.id !== mainNode?.id);
+    for (const n of [...unexplored, ...explored]) {
+      const pool = [...(n.macroQs || []), ...(n.microQs || [])];
+      for (const q of pool) {
+        if (q && !usedQuestions.has(q) && !questions.includes(q)) {
+          questions.push(q);
+          if (questions.length >= 3) break;
+        }
+      }
+      if (questions.length >= 3) break;
     }
   }
 

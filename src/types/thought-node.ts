@@ -30,13 +30,11 @@ export interface ThoughtNode {
   dialogueMove: "clarify" | "test" | "elevate";
   teachingGoal: string;
   nextLikelyNodes: string[];
-  /** Big-picture questions (for rapport / early stage) */
+  /** Big-picture questions (introductory / entry-level) */
   macroQs: string[];
-  /** Mid-depth questions */
-  midQs: string[];
-  /** Micro-detail questions */
+  /** Deep-dive questions (probing / advanced) */
   microQs: string[];
-  bridgeTemplates: string[];
+
   keywords: string[];
   thesis: string;
   tension: string;

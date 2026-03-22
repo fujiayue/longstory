@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
-      "runtimeArgs": ["-NoProfile", "-Command", "cd 'F:/claude_local/dialogue-with-stars'; node ./node_modules/vite/bin/vite.js --port 5173"],
-      "port": 5173
+      "runtimeExecutable": "npx.cmd",
+      "runtimeArgs": ["vite", "--port", "5176"],
+      "port": 5176
     }
   ]
 }

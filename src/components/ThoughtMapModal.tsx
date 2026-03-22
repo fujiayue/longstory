@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { ThoughtNode, PhilosopherModule } from "../types";
+import { useAppStore } from "../store/app-store";
 
 interface Props {
   philosopher: PhilosopherModule;
@@ -27,11 +28,8 @@ function makeBgStars() {
 
 export default function ThoughtMapModal({ philosopher, exploredNodes, onClose, onNodeClick }: Props) {
   const { outline, lineageConnections, lineageOrder, mapTitle, mapSubtitle } = philosopher;
+  const store = useAppStore();
 
-  const nodeMap = useMemo(
-    () => Object.fromEntries(outline.map((n) => [n.id, n])),
-    [outline],
-  );
   const bgStars = useMemo(makeBgStars, []);
 
   return (
@@ -152,6 +150,36 @@ export default function ThoughtMapModal({ philosopher, exploredNodes, onClose, o
                   <text x={node.x} y={node.y + nr + 5.8} textAnchor="middle" fontSize="1.5" fontFamily="'Noto Serif SC',serif" fontStyle="italic" fill={explored ? "#7a7a95" : "#2e2e40"}>
                     {node.brief}
                   </text>
+                  {explored && (
+                    <g
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        store.setShowCardNodeId(node.id);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <rect
+                        x={node.x - 8}
+                        y={node.y + nr + 7.2}
+                        width="16"
+                        height="3.2"
+                        rx="1"
+                        fill="rgba(168,197,226,0.12)"
+                        stroke="rgba(168,197,226,0.25)"
+                        strokeWidth="0.15"
+                      />
+                      <text
+                        x={node.x}
+                        y={node.y + nr + 9.3}
+                        textAnchor="middle"
+                        fontSize="1.6"
+                        fontFamily="'Noto Serif SC',serif"
+                        fill="#A8C5E2"
+                      >
+                        📖 查看知识卡片
+                      </text>
+                    </g>
+                  )}
                   <circle cx={node.x} cy={node.y} r="7" fill="transparent" />
                 </g>
               );

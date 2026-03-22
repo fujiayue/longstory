@@ -5,7 +5,7 @@ import { callAI } from "../engine/ai-client";
 import { selectFragments } from "../engine/fragment-selector";
 import { getSuggestedQuestions } from "../engine/question-generator";
 import { evaluateCardTrigger } from "../engine/card-trigger";
-import { loadPhilosopher } from "../data/philosophers";
+import { loadPhilosopher, getPresetAnswer } from "../data/philosophers";
 import { COORDINATE_PROMPT } from "../prompts/coordinate";
 import ChatBubble from "./ChatBubble";
 import OutlineProgress from "./OutlineProgress";
@@ -31,6 +31,10 @@ export default function ChatView() {
     if (!store._hydrated || !philosopher) return;
     if (store.messages.length === 0) {
       store.setMessages([{ role: "assistant", content: philosopher.greeting }]);
+      // Mark shown questions as used to prevent repeats
+      for (const q of philosopher.initQuestions) {
+        if (q && q !== MAP_TRIGGER_SENTINEL) store.markQuestionUsed(q);
+      }
       store.setSuggestedQs([...philosopher.initQuestions, MAP_TRIGGER_SENTINEL]);
     } else if (store.suggestedQs.length === 0) {
       const snap = useAppStore.getState();
@@ -50,11 +54,19 @@ export default function ChatView() {
           focusTerm: sel.focusTerm,
           exploredNodes: snap.exploredNodes,
           usedQuestions: snap.usedQuestions,
-          hitKeywords: sel.hitKeywords,
           allNodes: philosopher.outline,
+          nodeHitCounts: snap.nodeHitCounts || {},
         });
+        // Mark shown questions as used to prevent repeats
+        for (const q of qs) {
+          if (q && q !== MAP_TRIGGER_SENTINEL) store.markQuestionUsed(q);
+        }
         store.setSuggestedQs([...qs.slice(0, 2), MAP_TRIGGER_SENTINEL]);
       } else {
+        // Mark shown questions as used to prevent repeats
+        for (const q of philosopher.initQuestions) {
+          if (q && q !== MAP_TRIGGER_SENTINEL) store.markQuestionUsed(q);
+        }
         store.setSuggestedQs([...philosopher.initQuestions, MAP_TRIGGER_SENTINEL]);
       }
     }
@@ -65,8 +77,83 @@ export default function ChatView() {
     if (q === MAP_TRIGGER_SENTINEL) {
       store.setShowThoughtMap(true);
     } else {
-      doSend(q);
+      const preset = getPresetAnswer(store.activePhilosopher?.id ?? "", q);
+      if (preset) {
+        doPreset(q, preset);
+      } else {
+        doSend(q);
+      }
     }
+  };
+
+  const doPreset = async (question: string, answer: string) => {
+    if (!philosopher) return;
+    store.setInput("");
+    store.setSuggestedQs([]);
+    store.markQuestionUsed(question.trim());
+    store.incrementChatCount();
+    store.incrementTurn();
+
+    const userMsg: ChatMessage = { role: "user", content: question.trim() };
+    const prevMessages = useAppStore.getState().messages;
+
+    // 先显示"思考中"状态，模拟 AI 响应延迟
+    store.setMessages([...prevMessages, userMsg, { role: "assistant", content: "", thinking: true }]);
+    store.setLoading(true);
+
+    // 根据答案长度计算延迟：800ms~2500ms
+    const delay = Math.min(800 + answer.length * 8, 2500);
+    await new Promise((r) => setTimeout(r, delay));
+
+    const newMsgs: ChatMessage[] = [...prevMessages, userMsg, { role: "assistant", content: answer }];
+    store.setMessages(newMsgs);
+    store.setLoading(false);
+
+    // 用 selectFragments 做节点匹配，生成下一轮建议问题
+    const snap = useAppStore.getState();
+    const sel = selectFragments(
+      question + " " + answer,
+      newMsgs,
+      snap.exploredNodes,
+      snap.turnCount,
+      snap.recentMatchedNodes,
+      { outline: philosopher.outline, translations: philosopher.translations, deepFrameworks: philosopher.deepFrameworks },
+    );
+    if (sel.matchedNodeId) store.pushRecentMatch(sel.matchedNodeId);
+
+    // Card trigger logic (same as doSend)
+    const snap2 = useAppStore.getState();
+    const cardResult = evaluateCardTrigger({
+      matchedNodeId: sel.matchedNodeId,
+      nodeHitCounts: snap2.nodeHitCounts,
+      exploredNodes: snap2.exploredNodes,
+      outline: philosopher.outline,
+    });
+    if (cardResult.node) {
+      store.incrementNodeHit(cardResult.node.id);
+    }
+    if (cardResult.markExplored && cardResult.node) {
+      store.markExplored(cardResult.node.id);
+      store.collectCard(cardResult.node.id);
+      if (cardResult.showCard) {
+        setTimeout(() => useAppStore.getState().setShowCardNodeId(cardResult.node!.id), 1500);
+      }
+    }
+
+    const latestState = useAppStore.getState();
+    const nextQs = getSuggestedQuestions({
+      mainNode: sel.mainNode,
+      stage: sel.stage,
+      focusTerm: sel.focusTerm,
+      exploredNodes: latestState.exploredNodes,
+      usedQuestions: latestState.usedQuestions,
+      allNodes: philosopher.outline,
+      nodeHitCounts: latestState.nodeHitCounts || {},
+    });
+    for (const q of nextQs) {
+      if (q && q !== MAP_TRIGGER_SENTINEL) store.markQuestionUsed(q);
+    }
+    store.setSuggestedQs([...nextQs.slice(0, 2), MAP_TRIGGER_SENTINEL]);
   };
 
   const doSend = async (text: string) => {
@@ -96,9 +183,14 @@ export default function ChatView() {
         .filter((m) => !m.isCoordinate)
         .map((m) => ({ role: m.role, content: m.content }));
       const reply = await callAI(fullPrompt, apiMsgs, 1024);
+      // Parse AI node tag [NODE:xxx]
+      const nodeTagMatch = (reply || "").match(/\[NODE:(\w+)\]/);
+      const aiTaggedNodeId = nodeTagMatch ? nodeTagMatch[1] : null;
+      // Strip tag from displayed reply
+      const cleanReply = (reply || "").replace(/\s*\[NODE:\w+\]\s*$/, "").trim() || "……让我想想。";
       let finalMsgs: ChatMessage[] = [
         ...newMsgs,
-        { role: "assistant", content: reply || "……让我想想。" },
+        { role: "assistant", content: cleanReply },
       ];
 
       const postAwaitSnap = useAppStore.getState();
@@ -110,24 +202,35 @@ export default function ChatView() {
         postAwaitSnap.recentMatchedNodes,
         { outline: philosopher.outline, translations: philosopher.translations, deepFrameworks: philosopher.deepFrameworks },
       );
-      const { matchedNodeId, mainNode, stage, focusTerm, hitKeywords } = selection;
-      if (matchedNodeId) store.pushRecentMatch(matchedNodeId);
+      // AI tag takes priority over keyword match
+      const effectiveNodeId = aiTaggedNodeId
+        && philosopher.outline.some(n => n.id === aiTaggedNodeId)
+        ? aiTaggedNodeId
+        : selection.matchedNodeId;
+      const effectiveMainNode = effectiveNodeId
+        ? philosopher.outline.find(n => n.id === effectiveNodeId) ?? selection.mainNode
+        : selection.mainNode;
+      const { stage, focusTerm } = selection;
+      if (effectiveNodeId) store.pushRecentMatch(effectiveNodeId);
 
       const snap2 = useAppStore.getState();
       const cardResult = evaluateCardTrigger({
-        matchedNodeId,
+        matchedNodeId: effectiveNodeId,
+        nodeHitCounts: snap2.nodeHitCounts,
         exploredNodes: snap2.exploredNodes,
-        turnCount: newTurn,
-        lastCardTurn: snap2.lastCardTurn,
         outline: philosopher.outline,
       });
 
       let nextExploredNodes = [...snap2.exploredNodes];
+      // Always increment hit count if a node was matched
+      if (cardResult.node) {
+        store.incrementNodeHit(cardResult.node.id);
+      }
       if (cardResult.markExplored && cardResult.node) {
         store.markExplored(cardResult.node.id);
+        store.collectCard(cardResult.node.id);
         nextExploredNodes = [...snap2.exploredNodes, cardResult.node.id];
         if (cardResult.showCard) {
-          store.setLastCardTurn(newTurn);
           setTimeout(() => useAppStore.getState().setShowCardNodeId(cardResult.node!.id), 1500);
         }
       }
@@ -153,14 +256,18 @@ export default function ChatView() {
       setTimeout(() => {
         const latestState = useAppStore.getState();
         const qs = getSuggestedQuestions({
-          mainNode,
+          mainNode: effectiveMainNode,
           stage,
           focusTerm,
           exploredNodes: nextExploredNodes,
           usedQuestions: latestState.usedQuestions,
-          hitKeywords,
           allNodes: philosopher.outline,
+          nodeHitCounts: latestState.nodeHitCounts || {},
         });
+        // Mark shown questions as used to prevent repeats
+        for (const q of qs) {
+          if (q && q !== MAP_TRIGGER_SENTINEL) store.markQuestionUsed(q);
+        }
         store.setSuggestedQs([...qs.slice(0, 2), MAP_TRIGGER_SENTINEL]);
       }, 300);
     } catch (e: any) {

@@ -66,11 +66,14 @@ function AppInner() {
         ...store.messages,
         { role: "assistant", content: node.domainIntro },
       ]);
-      const qs = (node.coreQuestions || node.macroQs || []).slice(0, 2);
+      const usedQs = useAppStore.getState().usedQuestions;
+      const qs = (node.macroQs || []).slice(0, 2).filter(q => !usedQs.has(q));
       store.setSuggestedQs([...qs, "__OPEN_THOUGHT_MAP__"]);
       if (!store.exploredNodes.includes(node.id)) {
         store.markExplored(node.id);
       }
+      // Collect the card when user actively explores a node
+      store.collectCard(node.id);
     }
   };
 
@@ -208,9 +211,6 @@ function AppInner() {
         card={cardNode?.card ?? null}
         nodeColor={cardNode?.color ?? "#F5C542"}
         onClose={() => store.setShowCardNodeId(null)}
-        onCollect={() => {
-          if (cardNode) store.collectCard(cardNode.id);
-        }}
       />
 
       <UnlockBanner

@@ -28,7 +28,7 @@ export const SOCRATES_MODULE: PhilosopherModule = {
     "你好，朋友。你来找我，是有什么困惑，还是只是路过雅典的市集？不过我得提醒你——跟我聊天的人，最后往往比开始时更困惑。",
   mapTitle: "苏格拉底的思想脉络",
   mapSubtitle: "从无知到死亡",
-  initQuestions: ["苏格拉底最看重什么？", "什么是真正的智慧？"],
+  initQuestions: ["什么是真正的智慧？", "哲学对话和普通聊天有什么不同？"],
   basePrompt: SOCRATES_BASE_PROMPT,
   buildPrompt: buildSocratesPrompt,
 };

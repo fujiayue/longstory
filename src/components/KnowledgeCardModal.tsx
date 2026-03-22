@@ -4,10 +4,9 @@ interface Props {
   card: KnowledgeCard | null;
   nodeColor: string;
   onClose: () => void;
-  onCollect: () => void;
 }
 
-export default function KnowledgeCardModal({ card, nodeColor, onClose, onCollect }: Props) {
+export default function KnowledgeCardModal({ card, nodeColor, onClose }: Props) {
   if (!card) return null;
   const color = nodeColor || "#F5C542";
 
@@ -18,7 +17,7 @@ export default function KnowledgeCardModal({ card, nodeColor, onClose, onCollect
         inset: 0,
         zIndex: 200,
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-end",
         justifyContent: "center",
         background: "rgba(0,0,0,0.75)",
         backdropFilter: "blur(10px)",
@@ -36,6 +35,7 @@ export default function KnowledgeCardModal({ card, nodeColor, onClose, onCollect
           overflow: "hidden",
           boxShadow: `0 0 50px ${color}12`,
           animation: "slideUp 0.35s ease",
+          marginBottom: 20,
         }}
       >
         <div
@@ -65,41 +65,21 @@ export default function KnowledgeCardModal({ card, nodeColor, onClose, onCollect
             alignItems: "center",
           }}
         >
-          <span style={{ fontSize: 11.5, color: "#555", fontStyle: "italic" }}>📖 {card.source}</span>
-          <div style={{ display: "flex", gap: 10 }}>
-            <button
-              onClick={onClose}
-              style={{
-                padding: "8px 18px",
-                background: "transparent",
-                border: "1px solid #3a3a50",
-                borderRadius: 9,
-                color: "#777",
-                cursor: "pointer",
-                fontSize: 13,
-              }}
-            >
-              关闭
-            </button>
-            <button
-              onClick={() => {
-                onCollect();
-                onClose();
-              }}
-              style={{
-                padding: "8px 20px",
-                background: `${color}18`,
-                border: `1px solid ${color}44`,
-                borderRadius: 9,
-                color,
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: 600,
-              }}
-            >
-              收藏卡片 ✦
-            </button>
-          </div>
+          <span style={{ fontSize: 11.5, color: "#555", fontStyle: "italic" }}>{card.source}</span>
+          <button
+            onClick={onClose}
+            style={{
+              padding: "8px 18px",
+              background: "transparent",
+              border: "1px solid #3a3a50",
+              borderRadius: 9,
+              color: "#777",
+              cursor: "pointer",
+              fontSize: 13,
+            }}
+          >
+            关闭
+          </button>
         </div>
       </div>
     </div>
