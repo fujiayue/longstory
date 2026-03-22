@@ -4,6 +4,7 @@ import { PLATO_MODULE } from "./plato/module";
 import { ARISTOTLE_MODULE } from "./aristotle/module";
 import { getPresetAnswer as getSocratesPresetAnswer } from "./socrates/answers";
 import { getPresetAnswer as getPlatoPresetAnswer } from "./plato/answers";
+import { getPresetAnswer as getAristotlePresetAnswer } from "./aristotle/answers";
 
 const MODULES: Record<string, PhilosopherModule> = {
   socrates: SOCRATES_MODULE,
@@ -14,6 +15,7 @@ const MODULES: Record<string, PhilosopherModule> = {
 const PRESET_ANSWER_MAP: Record<string, (q: string) => string | null> = {
   socrates: getSocratesPresetAnswer,
   plato: getPlatoPresetAnswer,
+  aristotle: getAristotlePresetAnswer,
 };
 
 /** Load a philosopher's full module by id. Returns null if not yet built. */

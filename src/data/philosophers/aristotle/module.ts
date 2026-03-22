@@ -28,7 +28,7 @@ export const ARISTOTLE_MODULE: PhilosopherModule = {
     "你好。我们先做个区分：你是来听我讲，还是带着一个具体的问题来的？两种情况我都欢迎，但我们的对话会走向不同的地方。",
   mapTitle: "亚里士多德的思想脉络",
   mapSubtitle: "从四因到幸福",
-  initQuestions: ["为什么一件事会发生？", "什么是真正的幸福？"],
+  initQuestions: ["对人类来说，\u201c最高善\u201d是什么？", "你曾说我爱我师（柏拉图），但我更爱真理，你觉得你们俩谁离真理更近？"],
   basePrompt: ARISTOTLE_BASE_PROMPT,
   buildPrompt: buildAristotlePrompt,
 };
