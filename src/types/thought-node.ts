@@ -25,7 +25,6 @@ export interface ThoughtNode {
   description: string;
   /** Socrates' introductory monologue for this domain */
   domainIntro: string;
-  coreQuestions: string[];
   /** Which dialogue move this node aligns with */
   dialogueMove: "clarify" | "test" | "elevate";
   teachingGoal: string;

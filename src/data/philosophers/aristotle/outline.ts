@@ -19,11 +19,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户意识到他们通常只给出一种原因（多为动力因），引导其养成多维度追问的习惯",
     nextLikelyNodes: ["hylomorphism", "syllogism", "eudaimonia"],
     keywords: ["原因", "为什么", "解释", "材料", "目的", "质料", "形式", "四因", "动力", "因果", "因为", "构成", "制造"],
-    coreQuestions: [
-      "这件事的质料因、形式因、动力因、目的因各是什么？",
-      "你通常给出的是哪种原因？",
-      "目的因对你来说最难理解，还是最显然？",
-    ],
     macroQs: [
       "你说「因为」的时候，到底说了几种原因？",
       "解释一件事，一个原因够吗？",
@@ -79,11 +74,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户质疑柏拉图式的「理想 vs 现实」二分，认识到事物的本质就在事物本身之中",
     nextLikelyNodes: ["potentiality", "psyche", "four_causes"],
     keywords: ["形式", "质料", "本质", "理念", "柏拉图", "分离", "统一", "物质", "形状", "结构", "本体", "实体", "理想"],
-    coreQuestions: [
-      "一件事物的本质，在事物本身里，还是在某个「理想形式」里？",
-      "形式能脱离质料单独存在吗？",
-      "「理想的X」和「现实的X」的关系是什么？",
-    ],
     macroQs: [
       "一件事物的本质，在事物本身里，还是在某个「理想」里？",
       "柏拉图说形式在另一个世界——你相信吗？",
@@ -139,11 +129,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户用「成为」而非「是」来理解自己——你不只是现在这个状态，你还是所有你有潜力成为的",
     nextLikelyNodes: ["eudaimonia", "prime_mover", "hylomorphism"],
     keywords: ["潜能", "实现", "可能", "发展", "成长", "改变", "运动", "变化", "潜力", "发挥", "完成", "成为", "能力"],
-    coreQuestions: [
-      "你在谈论的，是某件事物现在是什么，还是它能成为什么？",
-      "有什么事你觉得自己还没实现？那个未实现的部分，是真实的吗？",
-      "潜能和空想有什么区别？",
-    ],
     macroQs: [
       "你现在是你能成为的最好状态吗？",
       "一颗种子算不算一棵树？",
@@ -199,11 +184,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户区分「感到快乐」和「过得好」，认识到幸福是一种需要实践和习惯的生命状态",
     nextLikelyNodes: ["virtue", "psyche", "polis"],
     keywords: ["幸福", "快乐", "意义", "人生", "好的生活", "满足", "成功", "活得好", "目的", "价值", "eudaimonia", "flourishing", "人生目标"],
-    coreQuestions: [
-      "你追求的是幸福还是快乐？你能区分两者吗？",
-      "人的「功能」是什么？一把刀的功能是切，一个人的功能是什么？",
-      "你现在的生活，是在充分发挥你能发挥的吗？",
-    ],
     macroQs: [
       "你觉得「幸福」和「快乐」是同一件事吗？",
       "一个人可以感到快乐但过得不好吗？",
@@ -259,11 +239,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户意识到「不是越多越好」——德性需要判断力找到恰当点，知道和做到之间需要习惯",
     nextLikelyNodes: ["eudaimonia", "polis", "psyche"],
     keywords: ["德性", "美德", "中道", "过度", "不及", "勇敢", "节制", "慷慨", "习惯", "品格", "性格", "中庸", "恰当", "意志"],
-    coreQuestions: [
-      "你觉得自己在哪个德性上倾向于过度，哪个倾向于不及？",
-      "知道什么是好的，为什么还做不到？亚里士多德对此怎么说？",
-      "德性必须靠习惯才能养成——这意味着什么？",
-    ],
     macroQs: [
       "勇敢和鲁莽有什么区别？",
       "一个好品格是天生的，还是练出来的？",
@@ -319,11 +294,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户质疑灵魂/身体的二元对立，理解亚里士多德式的形质整体观",
     nextLikelyNodes: ["hylomorphism", "eudaimonia", "prime_mover"],
     keywords: ["灵魂", "身体", "意识", "心理", "精神", "理性", "感知", "生命", "死亡", "不朽", "心灵", "感觉", "营养"],
-    coreQuestions: [
-      "你认为灵魂是「住在」身体里，还是「使」身体活着？",
-      "动物和植物的「灵魂」和人的灵魂有什么不同？",
-      "如果灵魂是身体的形式，身体消散时，灵魂还能存在吗？",
-    ],
     macroQs: [
       "灵魂和身体是两件东西吗？",
       "植物有灵魂吗？",
@@ -379,11 +349,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户质疑「个人先于社会」的现代直觉，理解人的本性是社会性的、政治性的",
     nextLikelyNodes: ["virtue", "eudaimonia", "prime_mover"],
     keywords: ["政治", "社会", "城邦", "共同体", "公民", "国家", "法律", "集体", "个人", "社区", "人际关系", "属于", "独立"],
-    coreQuestions: [
-      "如果没有语言、没有城邦，你的价值观能存在吗？",
-      "你现在的价值观，有多少是你「自己」的，有多少是共同体给你的？",
-      "什么样的共同体才能让人发挥最好的本性？",
-    ],
     macroQs: [
       "一个完全独自生活的人，算是完整的人吗？",
       "你觉得社会是为人服务的工具，还是人的本性的一部分？",
@@ -439,11 +404,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户感受从具体运动链条追溯到第一原因的哲学震撼，理解「神」作为哲学概念而非宗教人格神的意义",
     nextLikelyNodes: ["potentiality", "hylomorphism", "four_causes"],
     keywords: ["第一原动者", "第一因", "神", "运动", "无限", "宇宙", "起源", "因果", "永恒", "不动", "推动", "终极", "宇宙起源"],
-    coreQuestions: [
-      "一切变化都需要原因，这个链条可以无限延伸吗？",
-      "如果有第一原动者，它是一种什么样的存在？",
-      "亚里士多德的「神」和宗教意义上的「神」有什么不同？",
-    ],
     macroQs: [
       "如果一切都有原因，那一切原因的原因是什么？",
       "你相信宇宙有一个「第一推动力」吗？",
@@ -499,11 +459,6 @@ export const THOUGHT_OUTLINE: ThoughtNode[] = [
     teachingGoal: "让用户意识到论证的有效性（形式）和论证的真实性（内容）是两回事，从而更精确地评价论证",
     nextLikelyNodes: ["four_causes", "virtue", "eudaimonia"],
     keywords: ["逻辑", "论证", "推理", "前提", "结论", "三段论", "推断", "有效", "正确", "论点", "辩论", "论据", "演绎", "推论"],
-    coreQuestions: [
-      "你刚才的论证，前提是什么，结论是什么？",
-      "如果有人接受你的前提，他必须接受你的结论吗？",
-      "一个结论是真的，但论证是无效的——这可能吗？",
-    ],
     macroQs: [
       "你能说出一个别人根本无法反驳的论证吗？",
       "一个论证「听起来有道理」和「是有效的」是一件事吗？",
