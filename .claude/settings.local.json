@@ -6,7 +6,8 @@
       "Bash(node -e \":*)",
       "Bash(gh pr:*)",
       "Bash(where gh:*)",
-      "Bash(where.exe gh:*)"
+      "Bash(where.exe gh:*)",
+      "Bash(winget install:*)"
     ]
   }
 }
