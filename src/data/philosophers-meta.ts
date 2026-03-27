@@ -6,13 +6,12 @@ export const PHILOSOPHERS: PhilosopherMeta[] = [
   { id: "plato",     name: "柏拉图",   en: "Plato",     era: "428–348 BC",  x: 35, y: 24, unlocked: false, avatar: "Π", color: "#7EB8DA", brief: "理念论的创立者",        status: "active", requireCards: 2, requireChats: 6 },
   { id: "aristotle", name: "亚里士多德", en: "Aristotle", era: "384–322 BC", x: 20, y: 40, unlocked: false, avatar: "Α", color: "#A8D5A2", brief: "逻辑学之父，柏拉图的批评者", status: "active", requireCards: 2, requireChats: 6 },
   { id: "epicurus",  name: "伊壁鸠鲁", en: "Epicurus",  era: "341–270 BC",  x: 66, y: 20, unlocked: false, avatar: "Ε", color: "#E8A87C", brief: "快乐主义哲学",          status: "active", requireCards: 4, requireChats: 12 },
-  { id: "zeno",      name: "芝诺",     en: "Zeno",      era: "334–262 BC",  x: 76, y: 42, unlocked: false, avatar: "Ζ", color: "#B8B8D1", brief: "斯多葛学派创始人",     status: "active" },
-  { id: "augustine", name: "奥古斯丁", en: "Augustine", era: "354–430",     x: 40, y: 56, unlocked: false, avatar: "A", color: "#D4A5C9", brief: "基督教哲学奠基者",     status: "active" },
+  { id: "marcus",    name: "马可·奥勒留", en: "Marcus Aurelius", era: "121–180", x: 76, y: 42, unlocked: false, avatar: "M", color: "#8B7D6B", brief: "哲学家皇帝，斯多葛学派的实践者", status: "active", requireCards: 4, requireChats: 12 },
+  { id: "augustine", name: "奥古斯丁", en: "Augustine", era: "354–430",     x: 40, y: 56, unlocked: false, avatar: "A", color: "#D4A5C9", brief: "基督教哲学奠基者",     status: "active", requireCards: 6, requireChats: 18 },
   { id: "aquinas",   name: "阿奎那",   en: "Aquinas",   era: "1225–1274",   x: 60, y: 62, unlocked: false, avatar: "T", color: "#C4A882", brief: "信仰与理性的综合者",   status: "active" },
-  { id: "kant",      name: "康德",     en: "Kant",      era: "1724–1804",   x: 26, y: 70, unlocked: false, avatar: "K", color: "#F0E6AA", brief: "批判哲学",              status: "active" },
+  { id: "descartes", name: "笛卡尔",   en: "Descartes", era: "1596–1650",   x: 26, y: 70, unlocked: false, avatar: "D", color: "#82C4C3", brief: "我思故我在",            status: "active" },
 
   // ── Phase 2+: Coming soon ────────────────────────────────────
-  { id: "descartes",     name: "笛卡尔",    en: "Descartes",     era: "1596–1650", x: 56, y: 68, unlocked: false, avatar: "D", color: "#82C4C3", brief: "我思故我在",             status: "coming-soon" },
   { id: "hegel",         name: "黑格尔",    en: "Hegel",         era: "1770–1831", x: 14, y: 80, unlocked: false, avatar: "H", color: "#9BB5D4", brief: "辩证法与绝对精神",     status: "coming-soon" },
   { id: "schopenhauer",  name: "叔本华",    en: "Schopenhauer",  era: "1788–1860", x: 40, y: 82, unlocked: false, avatar: "S", color: "#C4A8B8", brief: "意志与悲观主义",       status: "coming-soon" },
   { id: "marx",          name: "马克思",    en: "Marx",          era: "1818–1883", x: 58, y: 78, unlocked: false, avatar: "M", color: "#B8D4A8", brief: "历史唯物主义",         status: "coming-soon" },
@@ -33,19 +32,19 @@ export const CONSTELLATIONS: ConstellationEdge[] = [
   ["socrates",  "plato"],
   ["plato",     "aristotle"],
   ["socrates",  "epicurus"],
-  ["socrates",  "zeno"],
+  ["socrates",  "marcus"],
   // 中世纪线
   ["plato",     "augustine"],
   ["augustine", "aquinas"],
   // 近代线
-  ["aquinas",   "kant"],
+  ["aquinas",   "descartes"],
   // 德国观念论
-  ["kant",      "hegel"],
-  ["kant",      "schopenhauer"],
+  ["descartes", "hegel"],
+  ["descartes", "schopenhauer"],
   ["hegel",     "marx"],
   ["schopenhauer", "nietzsche"],
   // 现象学线
-  ["kant",      "husserl"],
+  ["descartes", "husserl"],
   ["husserl",   "heidegger"],
   ["heidegger", "sartre"],
   ["sartre",    "beauvoir"],
@@ -53,5 +52,5 @@ export const CONSTELLATIONS: ConstellationEdge[] = [
   ["russell",   "wittgenstein"],
   ["russell",   "quine"],
   // 批判理性主义
-  ["kant",      "popper"],
+  ["descartes", "popper"],
 ];
