@@ -8,7 +8,7 @@ export const PHILOSOPHERS: PhilosopherMeta[] = [
   { id: "epicurus",  name: "伊壁鸠鲁", en: "Epicurus",  era: "341–270 BC",  x: 66, y: 20, unlocked: false, avatar: "Ε", color: "#E8A87C", brief: "快乐主义哲学",          status: "active", requireCards: 4, requireChats: 12 },
   { id: "marcus",    name: "马可·奥勒留", en: "Marcus Aurelius", era: "121–180", x: 76, y: 42, unlocked: false, avatar: "M", color: "#8B7D6B", brief: "哲学家皇帝，斯多葛学派的实践者", status: "active", requireCards: 4, requireChats: 12 },
   { id: "augustine", name: "奥古斯丁", en: "Augustine", era: "354–430",     x: 40, y: 56, unlocked: false, avatar: "A", color: "#D4A5C9", brief: "基督教哲学奠基者",     status: "active", requireCards: 6, requireChats: 18 },
-  { id: "aquinas",   name: "阿奎那",   en: "Aquinas",   era: "1225–1274",   x: 60, y: 62, unlocked: false, avatar: "T", color: "#C4A882", brief: "信仰与理性的综合者",   status: "active" },
+  { id: "aquinas",   name: "阿奎那",   en: "Aquinas",   era: "1225–1274",   x: 55, y: 68, unlocked: false, avatar: "T", color: "#C4A882", brief: "经院哲学集大成者，《神学大全》作者",   status: "active", requireCards: 6, requireChats: 18 },
   { id: "descartes", name: "笛卡尔",   en: "Descartes", era: "1596–1650",   x: 26, y: 70, unlocked: false, avatar: "D", color: "#82C4C3", brief: "我思故我在",            status: "active" },
 
   // ── Phase 2+: Coming soon ────────────────────────────────────
