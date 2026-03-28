@@ -26,16 +26,26 @@ export default function ChatView() {
     setTimeout(() => inputRef.current?.focus(), 150);
   }, []);
 
+  function pickRandomMacroQs(count: number): string[] {
+    const all = philosopher!.outline.flatMap((n) => n.macroQs || []);
+    for (let i = all.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [all[i], all[j]] = [all[j], all[i]];
+    }
+    return all.slice(0, count);
+  }
+
   // Initialize first message — wait for IDB hydration first
   useEffect(() => {
     if (!store._hydrated || !philosopher) return;
     if (store.messages.length === 0) {
       store.setMessages([{ role: "assistant", content: philosopher.greeting }]);
+      const initQs = pickRandomMacroQs(2);
       // Mark shown questions as used to prevent repeats
-      for (const q of philosopher.initQuestions) {
+      for (const q of initQs) {
         if (q && q !== MAP_TRIGGER_SENTINEL) store.markQuestionUsed(q);
       }
-      store.setSuggestedQs([...philosopher.initQuestions, MAP_TRIGGER_SENTINEL]);
+      store.setSuggestedQs([...initQs, MAP_TRIGGER_SENTINEL]);
     } else if (store.suggestedQs.length === 0) {
       const snap = useAppStore.getState();
       const lastUserMsg = [...snap.messages].reverse().find((m) => m.role === "user");
@@ -63,11 +73,12 @@ export default function ChatView() {
         }
         store.setSuggestedQs([...qs.slice(0, 2), MAP_TRIGGER_SENTINEL]);
       } else {
+        const initQs = pickRandomMacroQs(2);
         // Mark shown questions as used to prevent repeats
-        for (const q of philosopher.initQuestions) {
+        for (const q of initQs) {
           if (q && q !== MAP_TRIGGER_SENTINEL) store.markQuestionUsed(q);
         }
-        store.setSuggestedQs([...philosopher.initQuestions, MAP_TRIGGER_SENTINEL]);
+        store.setSuggestedQs([...initQs, MAP_TRIGGER_SENTINEL]);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
