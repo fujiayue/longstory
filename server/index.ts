@@ -30,6 +30,6 @@ if (IS_PROD) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`[server] running on http://localhost:${PORT} (${IS_PROD ? "production" : "development"})`);
+app.listen(Number(PORT), "0.0.0.0", () => {
+  console.log(`[server] running on 0.0.0.0:${PORT} (${IS_PROD ? "production" : "development"})`);
 });
