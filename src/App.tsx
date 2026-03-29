@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import type { UnlockProgress } from "./types";
 import { useAppStore } from "./store/app-store";
 import { loadPhilosopher } from "./data/philosophers";
 import StarField from "./components/StarField";
@@ -14,21 +15,44 @@ import type { PhilosopherMeta, ThoughtNode } from "./types";
 function AppInner() {
   const store = useAppStore();
 
-  const progress = useMemo(
-    () => ({ cards: store.collectedCards.length, chats: store.chatCount }),
-    [store.collectedCards.length, store.chatCount],
+  const collectedCardsCount = store.collectedCards.length;
+
+  // Active philosophers in order (the unlock chain)
+  const activePhilosophers = useMemo(
+    () => store.philosophers.filter((p) => p.status === "active"),
+    [store.philosophers],
   );
 
-  // Check unlock conditions for all locked philosophers
+  // Compute unlock progress for each locked active philosopher
+  const unlockProgressMap = useMemo(() => {
+    const result: Record<string, UnlockProgress> = {};
+    const exploredSet = new Set(store.exploredNodes);
+    for (let i = 1; i < activePhilosophers.length; i++) {
+      const p = activePhilosophers[i];
+      if (p.unlocked) continue;
+      const prev = activePhilosophers[i - 1];
+      const prevModule = loadPhilosopher(prev.id);
+      if (!prevModule) continue;
+      const totalNodes = prevModule.outline.length;
+      const exploredCount = prevModule.outline.filter((n) => exploredSet.has(n.id)).length;
+      const nodeRatio = totalNodes > 0 ? exploredCount / totalNodes : 0;
+      const allMacroQs = prevModule.outline.flatMap((n) => n.macroQs || []);
+      const totalMacroQs = allMacroQs.length;
+      const clickedCount = (store.clickedPresetQsByPhilosopher[prev.id] || []).length;
+      const presetRatio = totalMacroQs > 0 ? clickedCount / totalMacroQs : 0;
+      result[p.id] = { nodeRatio, presetRatio, prevName: prev.name };
+    }
+    return result;
+  }, [activePhilosophers, store.exploredNodes, store.clickedPresetQsByPhilosopher]);
+
+  // Check unlock conditions: prev philosopher nodes ≥ 80% + preset Qs ≥ 50%
   useEffect(() => {
-    for (const p of store.philosophers) {
-      if (p.unlocked || !p.requireCards || !p.requireChats) continue;
-      if (
-        progress.cards >= p.requireCards &&
-        progress.chats >= p.requireChats
-      ) {
+    for (const [id, prog] of Object.entries(unlockProgressMap)) {
+      const p = store.philosophers.find((x) => x.id === id);
+      if (!p || p.unlocked) continue;
+      if (prog.nodeRatio >= 0.8 && prog.presetRatio >= 0.5) {
         store.setPhilosophers((prev) =>
-          prev.map((x) => (x.id === p.id ? { ...x, unlocked: true } : x)),
+          prev.map((x) => (x.id === id ? { ...x, unlocked: true } : x)),
         );
         setTimeout(
           () => store.setUnlockNotif({ ...p, unlocked: true }),
@@ -37,7 +61,7 @@ function AppInner() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress.cards, progress.chats]);
+  }, [unlockProgressMap]);
 
   const onStarClick = (p: PhilosopherMeta) => {
     store.setActivePhilosopher(p);
@@ -121,21 +145,21 @@ function AppInner() {
               ✦ DIALOGUE WITH THE STARS ✦
             </span>
             {/* Progress indicator */}
-            {(progress.cards > 0 || progress.chats > 0) && (
+            {collectedCardsCount > 0 && (
               <span style={{
                 position: "absolute",
                 right: 24,
                 fontSize: 11,
                 color: "#555",
               }}>
-                ✦{progress.cards} 💬{progress.chats}
+                ✦{collectedCardsCount}
               </span>
             )}
           </div>
           <StarMap
             philosophers={store.philosophers}
             onStarClick={onStarClick}
-            progress={progress}
+            unlockProgressMap={unlockProgressMap}
           />
           <div
             style={{
@@ -162,7 +186,7 @@ function AppInner() {
               点击亮起的星辰，开始对话
             </div>
             {/* Reset button — only show when there's progress */}
-            {(progress.cards > 0 || progress.chats > 0) && (
+            {(collectedCardsCount > 0 || store.chatCount > 0) && (
               <button
                 onClick={() => {
                   if (window.confirm("确定要重置所有进度吗？对话记录、卡片收藏、解锁状态都会清空。")) {

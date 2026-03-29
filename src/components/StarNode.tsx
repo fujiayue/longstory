@@ -1,9 +1,9 @@
-import type { PhilosopherMeta } from "../types";
+import type { PhilosopherMeta, UnlockProgress } from "../types";
 
 interface Props {
   p: PhilosopherMeta;
   onClick: (p: PhilosopherMeta) => void;
-  progress: { cards: number; chats: number };
+  unlockProgress?: UnlockProgress;
 }
 
 /** Generate points string for a 4-pointed sparkle star polygon */
@@ -17,7 +17,11 @@ function sparklePoints(cx: number, cy: number, R: number, ir = 0.22): string {
   return pts.join(" ");
 }
 
-export default function StarNode({ p, onClick, progress }: Props) {
+function pct(ratio: number): string {
+  return `${Math.round(ratio * 100)}%`;
+}
+
+export default function StarNode({ p, onClick, unlockProgress }: Props) {
   const isComingSoon = p.status === "coming-soon";
   const isClickable = p.unlocked && !isComingSoon;
 
@@ -25,18 +29,36 @@ export default function StarNode({ p, onClick, progress }: Props) {
     return (
       <g style={{ cursor: "default" }}>
         <polygon
-          points={sparklePoints(p.x, p.y, 0.7)}
+          points={sparklePoints(p.x, p.y, 1.0)}
           fill={p.color}
-          opacity="0.18"
+          opacity="0.30"
         />
         <text
-          x={p.x} y={p.y - 2.4}
+          x={p.x} y={p.y - 2.8}
           textAnchor="middle"
-          fill="#2e2e42"
-          fontSize="1.5"
+          fill="#3e3e58"
+          fontSize="1.7"
           style={{ fontFamily: "'Noto Serif SC',serif" }}
         >
           {p.name}
+        </text>
+        <text
+          x={p.x} y={p.y + 3.2}
+          textAnchor="middle"
+          fill="#2e2e48"
+          fontSize="0.9"
+          style={{ fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic" }}
+        >
+          {p.en}
+        </text>
+        <text
+          x={p.x} y={p.y + 5.0}
+          textAnchor="middle"
+          fill="#2a2a40"
+          fontSize="0.85"
+          style={{ fontFamily: "monospace" }}
+        >
+          即将推出
         </text>
       </g>
     );
@@ -91,8 +113,8 @@ export default function StarNode({ p, onClick, progress }: Props) {
         {p.en}
       </text>
 
-      {/* Unlock requirement */}
-      {!p.unlocked && p.requireCards && (
+      {/* Unlock progress: nodes explored % and preset Qs clicked % */}
+      {!p.unlocked && unlockProgress && (
         <text
           x={p.x} y={p.y + 6}
           textAnchor="middle"
@@ -100,7 +122,7 @@ export default function StarNode({ p, onClick, progress }: Props) {
           fontSize="0.85"
           style={{ fontFamily: "monospace" }}
         >
-          {progress.cards}/{p.requireCards}✦ {progress.chats}/{p.requireChats}💬
+          节点 {pct(unlockProgress.nodeRatio)} · 提问 {pct(unlockProgress.presetRatio)}
         </text>
       )}
     </g>

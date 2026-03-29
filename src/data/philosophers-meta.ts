@@ -3,12 +3,12 @@ import type { PhilosopherMeta, ConstellationEdge } from "../types";
 export const PHILOSOPHERS: PhilosopherMeta[] = [
   // ── 已上线：7 位可对话 ─────────────────────────────────────
   { id: "socrates",  name: "苏格拉底", en: "Socrates",  era: "469–399 BC",  x: 50, y: 38, unlocked: true,  avatar: "Σ", color: "#F5C542", brief: "古希腊哲学之父，以反诘法闻名于世", status: "active" },
-  { id: "plato",     name: "柏拉图",   en: "Plato",     era: "428–348 BC",  x: 35, y: 24, unlocked: false, avatar: "Π", color: "#7EB8DA", brief: "理念论的创立者",        status: "active", requireCards: 2, requireChats: 6 },
-  { id: "aristotle", name: "亚里士多德", en: "Aristotle", era: "384–322 BC", x: 20, y: 40, unlocked: false, avatar: "Α", color: "#A8D5A2", brief: "逻辑学之父，柏拉图的批评者", status: "active", requireCards: 2, requireChats: 6 },
-  { id: "epicurus",  name: "伊壁鸠鲁", en: "Epicurus",  era: "341–270 BC",  x: 66, y: 20, unlocked: false, avatar: "Ε", color: "#E8A87C", brief: "快乐主义哲学",          status: "active", requireCards: 4, requireChats: 12 },
-  { id: "marcus",    name: "马可·奥勒留", en: "Marcus Aurelius", era: "121–180", x: 76, y: 42, unlocked: false, avatar: "M", color: "#8B7D6B", brief: "哲学家皇帝，斯多葛学派的实践者", status: "active", requireCards: 4, requireChats: 12 },
-  { id: "augustine", name: "奥古斯丁", en: "Augustine", era: "354–430",     x: 40, y: 56, unlocked: false, avatar: "A", color: "#D4A5C9", brief: "基督教哲学奠基者",     status: "active", requireCards: 6, requireChats: 18 },
-  { id: "aquinas",   name: "阿奎那",   en: "Aquinas",   era: "1225–1274",   x: 55, y: 68, unlocked: false, avatar: "T", color: "#C4A882", brief: "经院哲学集大成者，《神学大全》作者", status: "active", requireCards: 6, requireChats: 18 },
+  { id: "plato",     name: "柏拉图",   en: "Plato",     era: "428–348 BC",  x: 35, y: 24, unlocked: false, avatar: "Π", color: "#7EB8DA", brief: "理念论的创立者",        status: "active" },
+  { id: "aristotle", name: "亚里士多德", en: "Aristotle", era: "384–322 BC", x: 20, y: 40, unlocked: false, avatar: "Α", color: "#A8D5A2", brief: "逻辑学之父，柏拉图的批评者", status: "active" },
+  { id: "epicurus",  name: "伊壁鸠鲁", en: "Epicurus",  era: "341–270 BC",  x: 66, y: 20, unlocked: false, avatar: "Ε", color: "#E8A87C", brief: "快乐主义哲学",          status: "active" },
+  { id: "marcus",    name: "马可·奥勒留", en: "Marcus Aurelius", era: "121–180", x: 76, y: 42, unlocked: false, avatar: "M", color: "#8B7D6B", brief: "哲学家皇帝，斯多葛学派的实践者", status: "active" },
+  { id: "augustine", name: "奥古斯丁", en: "Augustine", era: "354–430",     x: 40, y: 56, unlocked: false, avatar: "A", color: "#D4A5C9", brief: "基督教哲学奠基者",     status: "active" },
+  { id: "aquinas",   name: "阿奎那",   en: "Aquinas",   era: "1225–1274",   x: 55, y: 68, unlocked: false, avatar: "T", color: "#C4A882", brief: "经院哲学集大成者，《神学大全》作者", status: "active" },
 
   // ── Coming soon：22 位即将到来 ──────────────────────────────
   // 近代理性主义 / 经验主义

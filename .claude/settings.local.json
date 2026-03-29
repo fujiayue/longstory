@@ -14,7 +14,10 @@
       "Read(//c/Users/fjy/AppData/**)",
       "Bash(\"C:/Program Files/GitHub CLI/gh.exe\" --version)",
       "Bash(\"C:/Program Files/GitHub CLI/gh.exe\" auth status)",
-      "Bash(\"C:/Program Files/GitHub:*)"
+      "Bash(\"C:/Program Files/GitHub:*)",
+      "Bash(xargs grep:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

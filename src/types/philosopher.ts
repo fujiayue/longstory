@@ -14,16 +14,19 @@ export interface PhilosopherMeta {
   avatar: string;
   color: string;
   brief: string;
-  /** Number of collected cards required to unlock */
-  requireCards?: number;
-  /** Number of chat turns required to unlock */
-  requireChats?: number;
   /** 'active' = has content; 'coming-soon' = future batch, ghost display */
   status?: 'active' | 'coming-soon';
 }
 
 /** A pair of philosopher IDs that form a constellation line */
 export type ConstellationEdge = [string, string];
+
+/** Unlock progress for a locked philosopher, based on the previous philosopher's exploration */
+export interface UnlockProgress {
+  nodeRatio: number;    // 0–1, explored nodes / total nodes of prev philosopher
+  presetRatio: number;  // 0–1, clicked preset Qs / total preset Qs of prev philosopher
+  prevName: string;     // name of the previous philosopher
+}
 
 /** A complete philosopher module bundling all knowledge and prompt logic */
 export interface PhilosopherModule {

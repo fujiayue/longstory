@@ -65,6 +65,10 @@ export interface AppState {
   nodeHitCounts: Record<string, number>;
   incrementNodeHit: (nodeId: string) => void;
 
+  // Preset question click tracking (persisted, per philosopher, for unlock conditions)
+  clickedPresetQsByPhilosopher: Record<string, string[]>;
+  markPresetClicked: (philosopherId: string, question: string) => void;
+
   // Modals
   showThoughtMap: boolean;
   setShowThoughtMap: (v: boolean) => void;
@@ -146,6 +150,20 @@ export const useAppStore = create<AppState>()(
             [nodeId]: (s.nodeHitCounts[nodeId] || 0) + 1,
           },
         })),
+
+      // Preset question click tracking (persisted, per philosopher)
+      clickedPresetQsByPhilosopher: {},
+      markPresetClicked: (philosopherId, question) =>
+        set((s) => {
+          const existing = s.clickedPresetQsByPhilosopher[philosopherId] || [];
+          if (existing.includes(question)) return s;
+          return {
+            clickedPresetQsByPhilosopher: {
+              ...s.clickedPresetQsByPhilosopher,
+              [philosopherId]: [...existing, question],
+            },
+          };
+        }),
       // Modals
       showThoughtMap: false,
       setShowThoughtMap: (v) => set({ showThoughtMap: v }),
@@ -170,6 +188,7 @@ export const useAppStore = create<AppState>()(
           view: "sky" as AppView,
           activePhilosopher: null,
           nodeHitCounts: {},
+          clickedPresetQsByPhilosopher: {},
         }),
 
       // Hydration tracking
@@ -191,6 +210,7 @@ export const useAppStore = create<AppState>()(
         collectedCards: state.collectedCards,
         exploredNodes: state.exploredNodes,
         chatCount: state.chatCount,
+        clickedPresetQsByPhilosopher: state.clickedPresetQsByPhilosopher,
       }),
 
       // Merge persisted progress back, all conversation fields stay default
@@ -211,6 +231,7 @@ export const useAppStore = create<AppState>()(
           collectedCards: persisted.collectedCards ?? current.collectedCards,
           exploredNodes: persisted.exploredNodes ?? current.exploredNodes,
           chatCount: persisted.chatCount ?? current.chatCount,
+          clickedPresetQsByPhilosopher: persisted.clickedPresetQsByPhilosopher ?? current.clickedPresetQsByPhilosopher,
           _hydrated: true,
         };
       },

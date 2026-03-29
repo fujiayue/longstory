@@ -88,6 +88,9 @@ export default function ChatView() {
     if (q === MAP_TRIGGER_SENTINEL) {
       store.setShowThoughtMap(true);
     } else {
+      if (store.activePhilosopher?.id) {
+        store.markPresetClicked(store.activePhilosopher.id, q);
+      }
       const preset = getPresetAnswer(store.activePhilosopher?.id ?? "", q);
       if (preset) {
         doPreset(q, preset);
