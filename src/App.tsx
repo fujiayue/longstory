@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { UnlockProgress } from "./types";
 import { useAppStore } from "./store/app-store";
 import { loadPhilosopher } from "./data/philosophers";
@@ -16,6 +16,49 @@ function AppInner() {
   const store = useAppStore();
 
   const collectedCardsCount = store.collectedCards.length;
+
+  // ── Drag / pan state ──
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const drag = useRef({ active: false, lastX: 0, lastY: 0, velX: 0, velY: 0 });
+  const inertiaId = useRef(0);
+
+  function startInertia() {
+    cancelAnimationFrame(inertiaId.current);
+    function step() {
+      drag.current.velX *= 0.92;
+      drag.current.velY *= 0.92;
+      if (Math.abs(drag.current.velX) < 0.3 && Math.abs(drag.current.velY) < 0.3) return;
+      setOffset((prev) => ({ x: prev.x + drag.current.velX, y: prev.y + drag.current.velY }));
+      inertiaId.current = requestAnimationFrame(step);
+    }
+    inertiaId.current = requestAnimationFrame(step);
+  }
+
+  function onTouchStart(e: React.TouchEvent) {
+    cancelAnimationFrame(inertiaId.current);
+    const t = e.touches[0];
+    drag.current = { active: true, lastX: t.clientX, lastY: t.clientY, velX: 0, velY: 0 };
+    setIsDragging(true);
+  }
+
+  function onTouchMove(e: React.TouchEvent) {
+    if (!drag.current.active) return;
+    const t = e.touches[0];
+    const dx = t.clientX - drag.current.lastX;
+    const dy = t.clientY - drag.current.lastY;
+    drag.current.velX = dx;
+    drag.current.velY = dy;
+    drag.current.lastX = t.clientX;
+    drag.current.lastY = t.clientY;
+    setOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+  }
+
+  function onTouchEnd() {
+    drag.current.active = false;
+    setIsDragging(false);
+    startInertia();
+  }
 
   // Active philosophers in order (the unlock chain)
   const activePhilosophers = useMemo(
@@ -112,12 +155,17 @@ function AppInner() {
         position: "relative",
       }}
     >
-      <StarField />
+      <StarField offsetX={offset.x} offsetY={offset.y} />
       <Nebula />
 
       {/* ===== SKY VIEW ===== */}
       {store.view === "sky" && (
-        <>
+        <div
+          style={{ position: "absolute", inset: 0, zIndex: 1 }}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           <div
             style={{
               position: "fixed",
@@ -160,6 +208,9 @@ function AppInner() {
             philosophers={store.philosophers}
             onStarClick={onStarClick}
             unlockProgressMap={unlockProgressMap}
+            offsetX={offset.x}
+            offsetY={offset.y}
+            isDragging={isDragging}
           />
           <div
             style={{
@@ -207,7 +258,7 @@ function AppInner() {
               </button>
             )}
           </div>
-        </>
+        </div>
       )}
 
       {/* ===== INTRO VIEW ===== */}
