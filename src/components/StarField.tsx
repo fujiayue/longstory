@@ -77,7 +77,23 @@ export default function StarField({ offsetX = 0, offsetY = 0 }: Props) {
     }
 
     function draw() {
-      ctx.clearRect(0, 0, w, h);
+      // 1. Draw deep blue/purple gradient background
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+      bgGrad.addColorStop(0, "#080818");
+      bgGrad.addColorStop(1, "#0d0a1a");
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. Draw Milky Way light band (Sagittarius direction: bottom-left to top-right)
+      const mwGrad = ctx.createLinearGradient(0, h, w, 0);
+      mwGrad.addColorStop(0, "rgba(8, 8, 24, 0)");
+      mwGrad.addColorStop(0.3, "rgba(100, 120, 255, 0.04)");
+      mwGrad.addColorStop(0.5, "rgba(180, 160, 255, 0.1)");
+      mwGrad.addColorStop(0.7, "rgba(100, 120, 255, 0.04)");
+      mwGrad.addColorStop(1, "rgba(8, 8, 24, 0)");
+      ctx.fillStyle = mwGrad;
+      ctx.fillRect(0, 0, w, h);
+
       const t = frame.current++;
       const { x: ox, y: oy } = offsetRef.current;
 
@@ -85,6 +101,8 @@ export default function StarField({ offsetX = 0, offsetY = 0 }: Props) {
         const a = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
         const px = ((s.x + ox * s.parallax) % w + w) % w;
         const py = ((s.y + oy * s.parallax) % h + h) % h;
+        
+        // Near stars warm white, far stars bluish white
         ctx.fillStyle =
           s.parallax > 0.15 ? `rgba(255,245,220,${a})` : `rgba(210,215,245,${a})`;
         ctx.globalAlpha = a;
