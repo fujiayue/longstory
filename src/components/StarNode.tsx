@@ -1,87 +1,82 @@
 import type { PhilosopherMeta, UnlockProgress } from "../types";
 
-interface Props {
-  p: PhilosopherMeta;
-  onClick: (p: PhilosopherMeta) => void;
-  unlockProgress?: UnlockProgress;
-}
-
-/** 4-pointed sparkle star polygon */
-function sparklePoints(cx: number, cy: number, R: number, ir = 0.22): string {
-  const pts: string[] = [];
-  for (let i = 0; i < 8; i++) {
-    const a = (i * 45 - 90) * (Math.PI / 180);
-    const r = i % 2 === 0 ? R : R * ir;
-    pts.push(`${(cx + r * Math.cos(a)).toFixed(3)},${(cy + r * Math.sin(a)).toFixed(3)}`);
-  }
-  return pts.join(" ");
-}
-
 function pct(ratio: number): string {
   return `${Math.round(ratio * 100)}%`;
 }
 
-export default function StarNode({ p, onClick, unlockProgress }: Props) {
-  // 亮/暗完全由用户解锁状态决定，与 status 无关
+export default function StarNode({ p, onClick, unlockProgress }: {
+  p: PhilosopherMeta;
+  onClick: (p: PhilosopherMeta) => void;
+  unlockProgress?: UnlockProgress;
+}) {
   const lit = p.unlocked;
   const isClickable = lit;
-  const R = lit ? 2.0 : 1.1;
+  const R = lit ? 2.8 : 1.6;
 
   return (
     <g
       onClick={() => isClickable && onClick(p)}
       style={{ cursor: isClickable ? "pointer" : "default" }}
     >
-      {/* 脉冲光环 — 仅解锁时 */}
+      {/* Ink ripple — lit only */}
       {lit && (
-        <circle cx={p.x} cy={p.y} r="3.5" fill="none" stroke={p.color} strokeWidth="0.12" opacity="0.25">
-          <animate attributeName="r" values="3.5;5.5;3.5" dur="4s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.25;0.06;0.25" dur="4s" repeatCount="indefinite" />
+        <circle cx={p.x} cy={p.y} r="4" fill="none" stroke={p.color} strokeWidth="0.08" opacity="0.2">
+          <animate attributeName="r" values="4;6.5;4" dur="5s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.2;0.05;0.2" dur="5s" repeatCount="indefinite" />
         </circle>
       )}
 
-      {/* 发光晕 — 仅解锁时 */}
+      {/* Ink wash glow */}
       {lit && (
-        <circle cx={p.x} cy={p.y} r="2.2" fill={p.color} opacity="0.12" />
+        <circle cx={p.x} cy={p.y} r="3.2" fill={p.color} opacity="0.08" />
       )}
 
-      {/* 四角星 */}
-      <polygon
-        points={sparklePoints(p.x, p.y, R)}
-        fill={p.color}
-        opacity={lit ? 1 : 0.28}
+      {/* Ink circle (seal style) */}
+      <circle
+        cx={p.x} cy={p.y} r={R}
+        fill="none"
+        stroke={p.color}
+        strokeWidth={lit ? "0.35" : "0.15"}
+        opacity={lit ? 0.8 : 0.25}
       />
 
-      {/* 中文名 */}
+      {/* Center dot */}
+      <circle
+        cx={p.x} cy={p.y} r={lit ? 0.8 : 0.4}
+        fill={p.color}
+        opacity={lit ? 0.9 : 0.3}
+      />
+
+      {/* Name */}
       <text
-        x={p.x} y={p.y - 3.2}
+        x={p.x} y={p.y - 4.5}
         textAnchor="middle"
-        fill={lit ? "#e8e8f8" : "#3a3a55"}
-        fontSize={lit ? "2.2" : "1.7"}
+        fill={lit ? "#d8d0c0" : "#3a4050"}
+        fontSize={lit ? "2.5" : "1.8"}
         style={{ fontFamily: "'Noto Serif SC',serif", fontWeight: lit ? 600 : 400 }}
       >
         {p.name}
       </text>
 
-      {/* 英文名 — 仅解锁时显示 */}
+      {/* Era — lit only */}
       {lit && (
         <text
-          x={p.x} y={p.y + 4.2}
+          x={p.x} y={p.y + 5}
           textAnchor="middle"
-          fill="#8888aa"
-          fontSize="1.1"
-          style={{ fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic" }}
+          fill="#6a7a80"
+          fontSize="1.2"
+          style={{ fontFamily: "'Noto Serif SC',serif" }}
         >
-          {p.en}
+          {p.era}
         </text>
       )}
 
-      {/* 解锁进度提示 — 仅 active 且未解锁且有进度时 */}
+      {/* Unlock progress */}
       {!lit && p.status === "active" && unlockProgress && (
         <text
           x={p.x} y={p.y + 5.5}
           textAnchor="middle"
-          fill="#404058"
+          fill="#3a4858"
           fontSize="0.85"
           style={{ fontFamily: "monospace" }}
         >

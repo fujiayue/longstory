@@ -310,25 +310,25 @@ export default function ChatView() {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        background: "rgba(8,8,16,0.92)",
-        borderBottom: "1px solid #1a1a2a",
+        background: "rgba(13,17,23,0.95)",
+        borderBottom: "1px solid #1a2530",
         flexShrink: 0,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button
             onClick={() => store.setView("sky")}
             style={{
-              background: "none", border: "1px solid #2a2a40", borderRadius: 8,
-              color: "#7a7a9a", padding: "5px 10px", cursor: "pointer", fontSize: 11,
+              background: "none", border: "1px solid #1a2838", borderRadius: 8,
+              color: "#6a7a80", padding: "5px 10px", cursor: "pointer", fontSize: 11,
             }}
           >
-            ← 星图
+            ← 山图
           </button>
-          <span style={{ color: "#c8c8e0", fontSize: 14, fontWeight: 600, fontFamily: "'Noto Serif SC',serif" }}>
+          <span style={{ color: "#d8d0c0", fontSize: 14, fontWeight: 600, fontFamily: "'Noto Serif SC',serif" }}>
             {store.activePhilosopher?.name}
           </span>
-          <span style={{ color: "#555", fontSize: 11 }}>
-            ✦{store.collectedCards.length} 💬{store.chatCount}
+          <span style={{ color: "#4a5a60", fontSize: 11 }}>
+            ◯ {store.collectedCards.length} · {store.chatCount}问
           </span>
         </div>
         <OutlineProgress outline={philosopher.outline} exploredNodes={store.exploredNodes} />
@@ -353,7 +353,7 @@ export default function ChatView() {
         )}
         <div style={{
           display: "flex", gap: 10, alignItems: "flex-end",
-          background: "rgba(14,14,26,0.85)", border: "1px solid #222238",
+          background: "rgba(13,17,23,0.9)", border: "1px solid #1a2838",
           borderRadius: 16, padding: "12px 16px", backdropFilter: "blur(12px)",
         }}>
           <textarea
@@ -363,11 +363,11 @@ export default function ChatView() {
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); doSend(store.input); }
             }}
-            placeholder="说点什么……"
+            placeholder="有何疑惑……"
             rows={1}
             style={{
               flex: 1, background: "transparent", border: "none",
-              color: "#c8c8e0", fontSize: 15, fontFamily: "'Noto Serif SC',serif",
+              color: "#d0ccc0", fontSize: 15, fontFamily: "'Noto Serif SC',serif",
               resize: "none", lineHeight: 1.65, maxHeight: 120,
             }}
           />
@@ -375,15 +375,15 @@ export default function ChatView() {
             onClick={() => doSend(store.input)}
             disabled={store.loading || !store.input.trim()}
             style={{
-              width: 42, height: 42, borderRadius: 11,
-              background: store.loading || !store.input.trim() ? "#1a1a28" : "linear-gradient(140deg,#F5C542,#C89520)",
-              border: store.loading || !store.input.trim() ? "1px solid #2a2a3a" : "none",
+              width: 42, height: 42, borderRadius: "50%",
+              background: store.loading || !store.input.trim() ? "transparent" : "transparent",
+              border: store.loading || !store.input.trim() ? "1px solid #1a2838" : "1px solid #6b9080",
               cursor: store.loading || !store.input.trim() ? "default" : "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 20, color: "#0f0f1e", flexShrink: 0,
+              fontSize: 16, color: store.loading || !store.input.trim() ? "#3a4a50" : "#6b9080", flexShrink: 0,
             }}
           >
-            {store.loading ? <span className="thinking-dots" style={{ color: "#555" }}>·</span> : "↑"}
+            {store.loading ? <span className="thinking-dots" style={{ color: "#4a5a60" }}>·</span> : "↑"}
           </button>
         </div>
       </div>

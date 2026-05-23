@@ -6,16 +6,16 @@ interface Props {
 }
 
 export default function ChatBubble({ msg, philosopher }: Props) {
-  const avatarChar = philosopher?.avatar ?? "✦";
-  const avatarColor = philosopher?.color ?? "#F5C542";
+  const avatarChar = philosopher?.avatar ?? "◯";
+  const avatarColor = philosopher?.color ?? "#6b9080";
   const isUser = msg.role === "user";
 
   if (msg.isCoordinate) {
     return (
       <div style={{ width: "100%", textAlign: "center", padding: "10px 20px", margin: "6px 0", animation: "fadeIn 0.4s ease" }}>
-        <div style={{ display: "inline-block", padding: "8px 18px", borderRadius: 12, background: "rgba(245,197,66,0.05)", border: "1px solid rgba(245,197,66,0.1)" }}>
-          <span style={{ fontSize: 10, color: "#F5C542", letterSpacing: "0.12em", fontWeight: 600 }}>✦ 思想坐标 · </span>
-          <span style={{ fontSize: 12.5, color: "#9090a8", fontFamily: "'Noto Serif SC',serif" }}>{msg.content}</span>
+        <div style={{ display: "inline-block", padding: "8px 18px", borderRadius: 12, background: `${avatarColor}08`, border: `1px solid ${avatarColor}15` }}>
+          <span style={{ fontSize: 10, color: avatarColor, letterSpacing: "0.12em", fontWeight: 600 }}>◯ 思想坐标 · </span>
+          <span style={{ fontSize: 12.5, color: "#8a9098", fontFamily: "'Noto Serif SC',serif" }}>{msg.content}</span>
         </div>
       </div>
     );
@@ -38,17 +38,17 @@ export default function ChatBubble({ msg, philosopher }: Props) {
             width: 36,
             height: 36,
             borderRadius: "50%",
-            background: `linear-gradient(140deg,${avatarColor},${avatarColor}88)`,
+            border: `1.5px solid ${avatarColor}`,
+            background: `radial-gradient(circle at 40% 40%, ${avatarColor}15, transparent 70%)`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: 18,
             marginRight: 12,
             flexShrink: 0,
-            fontFamily: "serif",
-            color: "#0f0f1e",
+            fontFamily: "'Noto Serif SC',serif",
+            color: avatarColor,
             fontWeight: 700,
-            boxShadow: `0 0 16px ${avatarColor}33`,
           }}
         >
           {avatarChar}
@@ -58,19 +58,19 @@ export default function ChatBubble({ msg, philosopher }: Props) {
         style={{
           maxWidth: "82%",
           padding: "12px 17px",
-          background: isUser ? "rgba(80,120,210,0.15)" : "rgba(245,197,66,0.06)",
-          border: isUser ? "1px solid rgba(80,120,210,0.2)" : "1px solid rgba(245,197,66,0.12)",
+          background: isUser ? "rgba(60,80,100,0.12)" : `${avatarColor}08`,
+          border: isUser ? "1px solid rgba(60,80,100,0.18)" : `1px solid ${avatarColor}12`,
           borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-          color: "#d0d0e4",
+          color: "#d0ccc0",
           fontSize: 15,
-          lineHeight: 1.8,
+          lineHeight: 1.9,
           fontFamily: "'Noto Serif SC',serif",
           whiteSpace: "pre-wrap",
         }}
       >
         {msg.content}
         {msg.thinking && (
-          <span className="thinking-dots" style={{ color: "#F5C542", marginLeft: 4 }}>
+          <span className="thinking-dots" style={{ color: avatarColor, marginLeft: 4 }}>
             ···
           </span>
         )}

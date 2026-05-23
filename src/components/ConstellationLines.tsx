@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { PhilosopherMeta, ConstellationEdge } from "../types";
-import { CONSTELLATIONS } from "../data/philosophers-meta";
+import { CONSTELLATION_EDGES as CONSTELLATIONS } from "../data/philosophers-meta";
 
 interface Props {
   philosophers: PhilosopherMeta[];

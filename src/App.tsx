@@ -60,13 +60,11 @@ function AppInner() {
     startInertia();
   }
 
-  // Active philosophers in order (the unlock chain)
   const activePhilosophers = useMemo(
     () => store.philosophers.filter((p) => p.status === "active"),
     [store.philosophers],
   );
 
-  // Compute unlock progress for each locked active philosopher
   const unlockProgressMap = useMemo(() => {
     const result: Record<string, UnlockProgress> = {};
     const exploredSet = new Set(store.exploredNodes);
@@ -88,7 +86,6 @@ function AppInner() {
     return result;
   }, [activePhilosophers, store.exploredNodes, store.clickedPresetQsByPhilosopher]);
 
-  // Check unlock conditions: prev philosopher nodes ≥ 80% + preset Qs ≥ 50%
   useEffect(() => {
     for (const [id, prog] of Object.entries(unlockProgressMap)) {
       const p = store.philosophers.find((x) => x.id === id);
@@ -108,24 +105,20 @@ function AppInner() {
 
   const onStarClick = (p: PhilosopherMeta) => {
     store.setActivePhilosopher(p);
-    // Always show intro page first
     store.setView("intro");
   };
 
   const startChat = () => {
-    // Fresh conversation each time
     store.setMessages([]);
     store.setSuggestedQs([]);
     store.setView("chat");
   };
 
-  // Resolve card node for the modal
   const activeModule = loadPhilosopher(store.activePhilosopher?.id ?? "");
   const cardNode: ThoughtNode | null = store.showCardNodeId && activeModule
     ? activeModule.outline.find((n) => n.id === store.showCardNodeId) ?? null
     : null;
 
-  // Handle map node click — inject domain intro
   const handleMapNodeClick = (node: ThoughtNode) => {
     store.setShowThoughtMap(false);
     if (node.domainIntro) {
@@ -139,7 +132,6 @@ function AppInner() {
       if (!store.exploredNodes.includes(node.id)) {
         store.markExplored(node.id);
       }
-      // Collect the card when user actively explores a node
       store.collectCard(node.id);
     }
   };
@@ -150,8 +142,8 @@ function AppInner() {
         width: "100vw",
         height: "100dvh",
         overflow: "hidden",
-        background: "#080810",
-        fontFamily: "'Noto Serif SC','Cormorant Garamond',serif",
+        background: "#0d1117",
+        fontFamily: "'Noto Serif SC','ZCOOL XiaoWei',serif",
         position: "relative",
       }}
     >
@@ -173,34 +165,44 @@ function AppInner() {
               left: 0,
               right: 0,
               zIndex: 100,
-              padding: "18px 24px",
+              padding: "20px 24px",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               background:
-                "linear-gradient(to bottom, rgba(8,8,16,0.92) 0%, transparent 100%)",
+                "linear-gradient(to bottom, rgba(13,17,23,0.95) 0%, transparent 100%)",
             }}
           >
             <span
               style={{
-                color: "#d8d8f0",
+                color: "#d8d0c0",
                 fontSize: 22,
-                fontWeight: 700,
-                fontFamily: "'Cormorant Garamond',serif",
-                letterSpacing: "0.12em",
+                fontWeight: 600,
+                fontFamily: "'Noto Serif SC',serif",
+                letterSpacing: "0.2em",
               }}
             >
-              ✦ DIALOGUE WITH THE STARS ✦
+              长 话
             </span>
-            {/* Progress indicator */}
+            <span
+              style={{
+                color: "#5a6a70",
+                fontSize: 11,
+                marginLeft: 16,
+                fontFamily: "'Noto Serif SC',serif",
+                letterSpacing: "0.05em",
+              }}
+            >
+              Long Story
+            </span>
             {collectedCardsCount > 0 && (
               <span style={{
                 position: "absolute",
                 right: 24,
                 fontSize: 11,
-                color: "#555",
+                color: "#4a5a60",
               }}>
-                ✦{collectedCardsCount}
+                ◯ {collectedCardsCount}
               </span>
             )}
           </div>
@@ -228,19 +230,17 @@ function AppInner() {
           >
             <div
               style={{
-                color: "#505068",
+                color: "#4a5a68",
                 fontSize: 14,
-                fontFamily: "'Cormorant Garamond',serif",
-                fontStyle: "italic",
+                fontFamily: "'Noto Serif SC',serif",
               }}
             >
-              点击亮起的星辰，开始对话
+              点亮处，可问道
             </div>
-            {/* Reset button — only show when there's progress */}
             {(collectedCardsCount > 0 || store.chatCount > 0) && (
               <button
                 onClick={() => {
-                  if (window.confirm("确定要重置所有进度吗？对话记录、卡片收藏、解锁状态都会清空。")) {
+                  if (window.confirm("确定要重置所有进度吗？")) {
                     store.resetProgress();
                   }
                 }}
@@ -248,8 +248,8 @@ function AppInner() {
                   padding: "5px 14px",
                   borderRadius: 12,
                   background: "transparent",
-                  border: "1px solid #2a2a3a",
-                  color: "#444",
+                  border: "1px solid #1a2830",
+                  color: "#3a4a50",
                   fontSize: 11,
                   cursor: "pointer",
                 }}
@@ -284,7 +284,7 @@ function AppInner() {
 
       <KnowledgeCardModal
         card={cardNode?.card ?? null}
-        nodeColor={cardNode?.color ?? "#F5C542"}
+        nodeColor={cardNode?.color ?? "#6b9080"}
         onClose={() => store.setShowCardNodeId(null)}
       />
 
