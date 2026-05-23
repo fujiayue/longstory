@@ -41,47 +41,10 @@ jobs:
           command_timeout: 5m
           script: |
             set -e
-
-            echo "=== Checking nginx config ==="
-            # First, fix any broken config from previous attempt
-            # Remove any stray longstory lines that were incorrectly added to nginx.conf
-            sed -i '/# longstory static frontend/d' /etc/nginx/nginx.conf 2>/dev/null || true
-            sed -i '/location \/longstory\//d' /etc/nginx/nginx.conf 2>/dev/null || true
-            sed -i '/alias \/root\/longstory\/dist\//d' /etc/nginx/nginx.conf 2>/dev/null || true
-            sed -i '/try_files.*\/longstory\/index.html/d' /etc/nginx/nginx.conf 2>/dev/null || true
-
-            # Create a dedicated longstory include file
-            cat > /etc/nginx/conf.d/longstory.conf << 'NGXEOF'
-            location /longstory/ {
-                alias /root/longstory/dist/;
-                try_files $uri $uri/ /longstory/index.html;
-            }
-            NGXEOF
-
-            # Find the server block config file that handles philostars.top
-            SERVER_CONF=$(grep -rl 'server_name.*philostars' /etc/nginx/ 2>/dev/null | head -1)
-            echo "=== Server config: ${SERVER_CONF:-not found} ==="
-
-            if [ -n "$SERVER_CONF" ] && ! grep -q '/longstory/' "$SERVER_CONF"; then
-              echo "=== Adding /longstory/ to $SERVER_CONF ==="
-              # Remove the standalone conf.d file, add directly to server block
-              rm -f /etc/nginx/conf.d/longstory.conf
-              # Find the line with "location /" (the main catch-all) and insert before it
-              if grep -q 'location /' "$SERVER_CONF"; then
-                sed -i '/location \//i \    # longstory static frontend\n    location /longstory/ {\n        alias /root/longstory/dist/;\n        try_files $uri $uri/ /longstory/index.html;\n    }\n' "$SERVER_CONF"
-              else
-                # Fallback: insert before last }
-                sed -i '$ i \    # longstory static frontend\n    location /longstory/ {\n        alias /root/longstory/dist/;\n        try_files $uri $uri/ /longstory/index.html;\n    }' "$SERVER_CONF"
-              fi
-            elif [ -n "$SERVER_CONF" ]; then
-              echo "=== /longstory/ already in $SERVER_CONF ==="
-              rm -f /etc/nginx/conf.d/longstory.conf
-            else
-              echo "=== No server config found, using conf.d include ==="
-            fi
-
-            echo "=== Testing nginx config ==="
-            nginx -t
-            echo "=== Reloading nginx ==="
-            systemctl reload nginx
-            echo "=== deploy complete ==="
+            echo "=== nginx.conf content ==="
+            cat -n /etc/nginx/nginx.conf
+            echo "=== sites-available/stars content ==="
+            cat -n /etc/nginx/sites-available/stars 2>/dev/null || echo "not found"
+            echo "=== conf.d contents ==="
+            ls -la /etc/nginx/conf.d/ 2>/dev/null || echo "not found"
+            echo "=== END DIAG ==="
