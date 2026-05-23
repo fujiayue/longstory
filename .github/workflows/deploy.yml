@@ -41,10 +41,77 @@ jobs:
           command_timeout: 5m
           script: |
             set -e
-            echo "=== nginx.conf content ==="
-            cat -n /etc/nginx/nginx.conf
-            echo "=== sites-available/stars content ==="
-            cat -n /etc/nginx/sites-available/stars 2>/dev/null || echo "not found"
-            echo "=== conf.d contents ==="
-            ls -la /etc/nginx/conf.d/ 2>/dev/null || echo "not found"
-            echo "=== END DIAG ==="
+
+            # === Step 1: Fix nginx.conf (damaged by previous attempts) ===
+            # The events block has an extra } and http block has an extra }
+            # Restore clean nginx.conf
+            cat > /tmp/nginx_fix.py << 'PYEOF'
+            import re
+            with open('/etc/nginx/nginx.conf', 'r') as f:
+                content = f.read()
+            # Remove consecutive closing braces that are artifacts
+            # Fix events block: "    }\n}" should be just "}"
+            content = re.sub(r'(events\s*\{[^}]*\})\s*\n\}', r'\1', content)
+            # Fix http block ending: "    }\n}" should be just "}"
+            # Find the http block and ensure it closes properly
+            lines = content.split('\n')
+            fixed = []
+            prev_was_close = False
+            for line in lines:
+                stripped = line.strip()
+                if stripped == '}' and prev_was_close:
+                    continue  # skip duplicate closing brace
+                prev_was_close = (stripped == '}')
+                fixed.append(line)
+            with open('/etc/nginx/nginx.conf', 'w') as f:
+                f.write('\n'.join(fixed))
+            PYEOF
+            python3 /tmp/nginx_fix.py
+            rm /tmp/nginx_fix.py
+            echo "=== nginx.conf fixed ==="
+
+            # === Step 2: Fix sites-available/stars (remove duplicate longstory blocks) ===
+            STARS_CONF="/etc/nginx/sites-available/stars"
+            # Remove ALL longstory blocks, then add one clean block
+            python3 -c "
+            with open('$STARS_CONF', 'r') as f:
+                lines = f.readlines()
+            out = []
+            skip = False
+            for line in lines:
+                if '# longstory static frontend' in line:
+                    skip = True
+                    continue
+                if skip:
+                    if line.strip() == '}':
+                        skip = False
+                        continue
+                    continue
+                out.append(line)
+            # Insert longstory location before 'location /' line
+            final = []
+            inserted = False
+            for line in out:
+                if not inserted and line.strip().startswith('location /') and 'location /analytics' not in line:
+                    final.append('    # longstory static frontend\n')
+                    final.append('    location /longstory/ {\n')
+                    final.append('        alias /root/longstory/dist/;\n')
+                    final.append('        try_files \$uri \$uri/ /longstory/index.html;\n')
+                    final.append('    }\n')
+                    final.append('\n')
+                    inserted = True
+                final.append(line)
+            with open('$STARS_CONF', 'w') as f:
+                f.writelines(final)
+            "
+            echo "=== stars config fixed ==="
+
+            # === Step 3: Remove any stray conf.d/longstory.conf ===
+            rm -f /etc/nginx/conf.d/longstory.conf
+
+            # === Step 4: Test and reload ===
+            echo "=== Testing nginx ==="
+            nginx -t
+            echo "=== Reloading nginx ==="
+            systemctl reload nginx
+            echo "=== deploy complete ==="
