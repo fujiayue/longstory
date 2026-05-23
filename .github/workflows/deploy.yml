@@ -42,49 +42,33 @@ jobs:
           script: |
             set -e
 
-            echo "=== Step 1: Dump current HTTPS config for reference ==="
-            cat -n /etc/nginx/conf.d/philostars.conf 2>/dev/null || echo "philostars.conf not found"
-            echo "=== END DUMP ==="
+            # === Step 1: Fix file permissions ===
+            # nginx worker runs as www-data/nginx, needs read access to /root/longstory/
+            echo "=== Setting file permissions ==="
+            chmod 755 /root
+            chmod -R 755 /root/longstory
+            echo "Permissions set"
 
-            echo "=== Step 2: Add longstory location to HTTPS config ==="
+            # === Step 2: Verify files exist ===
+            echo "=== Checking deployed files ==="
+            ls -la /root/longstory/dist/ | head -20
+            test -f /root/longstory/dist/index.html && echo "index.html exists" || echo "ERROR: index.html missing!"
+
+            # === Step 3: Ensure longstory location in HTTPS config ===
             HTTPS_CONF="/etc/nginx/conf.d/philostars.conf"
             if [ -f "$HTTPS_CONF" ]; then
-              # Check if longstory block already exists
               if grep -q 'location /longstory/' "$HTTPS_CONF"; then
-                echo "longstory location already exists in HTTPS config, removing old one first"
-              fi
-
-              python3 << 'PYEOF'
+                echo "longstory location already in HTTPS config, skipping"
+              else
+                echo "Adding longstory location to HTTPS config"
+                python3 << 'PYEOF'
             conf_path = "/etc/nginx/conf.d/philostars.conf"
             with open(conf_path, "r") as f:
                 lines = f.readlines()
-
-            # Step A: Remove any existing longstory blocks
-            cleaned = []
-            skip = False
-            for line in lines:
-                if "longstory" in line and "location" in line:
-                    skip = True
-                    continue
-                if skip:
-                    if line.strip() == "}":
-                        skip = False
-                        continue
-                    continue
-                # Also skip comment lines about longstory
-                if "# longstory" in line:
-                    continue
-                cleaned.append(line)
-
-            # Step B: Find the right insertion point
-            # Insert BEFORE the catch-all "location / {" in the HTTPS server block
-            # We need to find "location / {" that is NOT "location /longstory"
-            # and NOT "location /analytics" etc.
             final = []
             inserted = False
-            for line in cleaned:
+            for line in lines:
                 stripped = line.strip()
-                # Match "location / {" exactly (the catch-all proxy)
                 if not inserted and (stripped == "location / {" or stripped == "location /{"):
                     final.append("    # longstory static frontend\n")
                     final.append("    location /longstory/ {\n")
@@ -94,34 +78,14 @@ jobs:
                     final.append("\n")
                     inserted = True
                 final.append(line)
-
-            if not inserted:
-                # Fallback: insert before the last closing brace of the file
-                # Find the last "}" and insert before it
-                for i in range(len(final) - 1, -1, -1):
-                    if final[i].strip() == "}":
-                        final.insert(i, "\n    # longstory static frontend\n")
-                        final.insert(i + 1, "    location /longstory/ {\n")
-                        final.insert(i + 2, "        alias /root/longstory/dist/;\n")
-                        final.insert(i + 3, "        try_files $uri $uri/ /longstory/index.html;\n")
-                        final.insert(i + 4, "    }\n")
-                        inserted = True
-                        break
-
             with open(conf_path, "w") as f:
                 f.writelines(final)
-
-            print(f"Inserted longstory block: {inserted}")
+            print(f"Inserted: {inserted}")
             PYEOF
-              echo "=== HTTPS config updated ==="
-            else
-              echo "WARNING: $HTTPS_CONF not found!"
+              fi
             fi
 
-            echo "=== Step 3: Verify updated HTTPS config ==="
-            cat -n /etc/nginx/conf.d/philostars.conf 2>/dev/null || echo "not found"
-
-            echo "=== Step 4: Test and reload ==="
+            # === Step 4: Test and reload ===
             nginx -t
             systemctl reload nginx
             echo "=== Deploy complete ==="
