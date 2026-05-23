@@ -1,0 +1,61 @@
+name: Deploy Longstory to ECS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --production=false
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload dist via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.ECS_HOST }}
+          username: ${{ secrets.ECS_USER }}
+          password: ${{ secrets.ECS_PASSWORD }}
+          source: "dist"
+          target: "/root/longstory"
+
+      - name: Configure nginx and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ECS_HOST }}
+          username: ${{ secrets.ECS_USER }}
+          password: ${{ secrets.ECS_PASSWORD }}
+          command_timeout: 5m
+          script: |
+            set -e
+
+            # Add longstory nginx location if not already present
+            NGINX_CONF="/etc/nginx/sites-enabled/default"
+            if ! grep -q '/longstory/' "$NGINX_CONF"; then
+              echo "=== Adding /longstory/ location to nginx ==="
+              # Insert before the last closing brace of the server block
+              sed -i '/^}/i \
+                # longstory static frontend\
+                location /longstory/ {\
+                    alias /root/longstory/dist/;\
+                    try_files $uri $uri/ /longstory/index.html;\
+                }' "$NGINX_CONF"
+              nginx -t && systemctl reload nginx
+              echo "=== nginx configured ==="
+            else
+              echo "=== nginx already configured ==="
+            fi
+
+            echo "=== deploy complete ==="
