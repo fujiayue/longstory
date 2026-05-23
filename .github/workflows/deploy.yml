@@ -42,76 +42,86 @@ jobs:
           script: |
             set -e
 
-            # === Step 1: Fix nginx.conf (damaged by previous attempts) ===
-            # The events block has an extra } and http block has an extra }
-            # Restore clean nginx.conf
-            cat > /tmp/nginx_fix.py << 'PYEOF'
-            import re
-            with open('/etc/nginx/nginx.conf', 'r') as f:
-                content = f.read()
-            # Remove consecutive closing braces that are artifacts
-            # Fix events block: "    }\n}" should be just "}"
-            content = re.sub(r'(events\s*\{[^}]*\})\s*\n\}', r'\1', content)
-            # Fix http block ending: "    }\n}" should be just "}"
-            # Find the http block and ensure it closes properly
-            lines = content.split('\n')
-            fixed = []
-            prev_was_close = False
-            for line in lines:
-                stripped = line.strip()
-                if stripped == '}' and prev_was_close:
-                    continue  # skip duplicate closing brace
-                prev_was_close = (stripped == '}')
-                fixed.append(line)
-            with open('/etc/nginx/nginx.conf', 'w') as f:
-                f.write('\n'.join(fixed))
-            PYEOF
-            python3 /tmp/nginx_fix.py
-            rm /tmp/nginx_fix.py
-            echo "=== nginx.conf fixed ==="
+            echo "=== Step 1: Dump current HTTPS config for reference ==="
+            cat -n /etc/nginx/conf.d/philostars.conf 2>/dev/null || echo "philostars.conf not found"
+            echo "=== END DUMP ==="
 
-            # === Step 2: Fix sites-available/stars (remove duplicate longstory blocks) ===
-            STARS_CONF="/etc/nginx/sites-available/stars"
-            # Remove ALL longstory blocks, then add one clean block
-            python3 -c "
-            with open('$STARS_CONF', 'r') as f:
+            echo "=== Step 2: Add longstory location to HTTPS config ==="
+            HTTPS_CONF="/etc/nginx/conf.d/philostars.conf"
+            if [ -f "$HTTPS_CONF" ]; then
+              # Check if longstory block already exists
+              if grep -q 'location /longstory/' "$HTTPS_CONF"; then
+                echo "longstory location already exists in HTTPS config, removing old one first"
+              fi
+
+              python3 << 'PYEOF'
+            conf_path = "/etc/nginx/conf.d/philostars.conf"
+            with open(conf_path, "r") as f:
                 lines = f.readlines()
-            out = []
+
+            # Step A: Remove any existing longstory blocks
+            cleaned = []
             skip = False
             for line in lines:
-                if '# longstory static frontend' in line:
+                if "longstory" in line and "location" in line:
                     skip = True
                     continue
                 if skip:
-                    if line.strip() == '}':
+                    if line.strip() == "}":
                         skip = False
                         continue
                     continue
-                out.append(line)
-            # Insert longstory location before 'location /' line
+                # Also skip comment lines about longstory
+                if "# longstory" in line:
+                    continue
+                cleaned.append(line)
+
+            # Step B: Find the right insertion point
+            # Insert BEFORE the catch-all "location / {" in the HTTPS server block
+            # We need to find "location / {" that is NOT "location /longstory"
+            # and NOT "location /analytics" etc.
             final = []
             inserted = False
-            for line in out:
-                if not inserted and line.strip().startswith('location /') and 'location /analytics' not in line:
-                    final.append('    # longstory static frontend\n')
-                    final.append('    location /longstory/ {\n')
-                    final.append('        alias /root/longstory/dist/;\n')
-                    final.append('        try_files \$uri \$uri/ /longstory/index.html;\n')
-                    final.append('    }\n')
-                    final.append('\n')
+            for line in cleaned:
+                stripped = line.strip()
+                # Match "location / {" exactly (the catch-all proxy)
+                if not inserted and (stripped == "location / {" or stripped == "location /{"):
+                    final.append("    # longstory static frontend\n")
+                    final.append("    location /longstory/ {\n")
+                    final.append("        alias /root/longstory/dist/;\n")
+                    final.append("        try_files $uri $uri/ /longstory/index.html;\n")
+                    final.append("    }\n")
+                    final.append("\n")
                     inserted = True
                 final.append(line)
-            with open('$STARS_CONF', 'w') as f:
+
+            if not inserted:
+                # Fallback: insert before the last closing brace of the file
+                # Find the last "}" and insert before it
+                for i in range(len(final) - 1, -1, -1):
+                    if final[i].strip() == "}":
+                        final.insert(i, "\n    # longstory static frontend\n")
+                        final.insert(i + 1, "    location /longstory/ {\n")
+                        final.insert(i + 2, "        alias /root/longstory/dist/;\n")
+                        final.insert(i + 3, "        try_files $uri $uri/ /longstory/index.html;\n")
+                        final.insert(i + 4, "    }\n")
+                        inserted = True
+                        break
+
+            with open(conf_path, "w") as f:
                 f.writelines(final)
-            "
-            echo "=== stars config fixed ==="
 
-            # === Step 3: Remove any stray conf.d/longstory.conf ===
-            rm -f /etc/nginx/conf.d/longstory.conf
+            print(f"Inserted longstory block: {inserted}")
+            PYEOF
+              echo "=== HTTPS config updated ==="
+            else
+              echo "WARNING: $HTTPS_CONF not found!"
+            fi
 
-            # === Step 4: Test and reload ===
-            echo "=== Testing nginx ==="
+            echo "=== Step 3: Verify updated HTTPS config ==="
+            cat -n /etc/nginx/conf.d/philostars.conf 2>/dev/null || echo "not found"
+
+            echo "=== Step 4: Test and reload ==="
             nginx -t
-            echo "=== Reloading nginx ==="
             systemctl reload nginx
-            echo "=== deploy complete ==="
+            echo "=== Deploy complete ==="
