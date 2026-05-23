@@ -22,12 +22,12 @@ export default function OutlineProgress({ outline, exploredNodes }: Props) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: explored ? `${node.color}20` : "rgba(255,255,255,0.03)",
-              border: `1px solid ${explored ? `${node.color}44` : "#222238"}`,
-              color: explored ? node.color : "#333",
+              background: explored ? `${node.color || '#6b9080'}20` : "rgba(255,255,255,0.03)",
+              border: `1px solid ${explored ? `${node.color || '#6b9080'}44` : "#222238"}`,
+              color: explored ? (node.color || '#6b9080') : "#333",
             }}
           >
-            {node.icon}
+            {node.icon || "◯"}
           </div>
         );
       })}

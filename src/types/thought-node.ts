@@ -2,14 +2,14 @@
 export interface KnowledgeCard {
   title: string;
   subtitle: string;
-  icon: string;
+  icon?: string;
   content: string;
   source: string;
-  whyNow: string;
-  nextNode: string;
+  whyNow?: string;
+  nextNode?: string;
 }
 
-/** A reframing rule that maps user statements to Socratic redirects */
+/** A reframing rule that maps user statements to redirects */
 export interface ReframingRule {
   userSays: string;
   youHear: string;
@@ -20,14 +20,14 @@ export interface ThoughtNode {
   id: string;
   label: string;
   brief: string;
-  icon: string;
-  color: string;
+  icon?: string;
+  color?: string;
   description: string;
-  /** Socrates' introductory monologue for this domain */
+  /** Philosopher's introductory monologue for this domain */
   domainIntro: string;
   /** Which dialogue move this node aligns with */
   dialogueMove: "clarify" | "test" | "elevate";
-  teachingGoal: string;
+  teachingGoal?: string;
   nextLikelyNodes: string[];
   /** Big-picture questions (introductory / entry-level) */
   macroQs: string[];
@@ -37,14 +37,17 @@ export interface ThoughtNode {
   keywords: string[];
   thesis: string;
   tension: string;
-  reframingRules: ReframingRule[];
+  reframingRules?: ReframingRule[];
   teachingHints: string[];
-  biographicalRefs: string[];
-  avoidWhen: string;
-  commonMisuse: string[];
+  biographicalRefs?: string[];
+  avoidWhen?: string;
+  commonMisuse?: string[];
+  personalAnchor?: string;
+  historicalAmmo?: string[];
+  honestBoundary?: string;
   /** Position in this philosopher's thought map (viewBox 0 0 100 130) */
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   card: KnowledgeCard;
 }
 

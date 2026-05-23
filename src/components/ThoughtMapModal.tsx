@@ -27,8 +27,18 @@ function makeBgStars() {
 }
 
 export default function ThoughtMapModal({ philosopher, exploredNodes, onClose, onNodeClick }: Props) {
-  const { outline, lineageConnections, lineageOrder, mapTitle, mapSubtitle } = philosopher;
+  const { outline: rawOutline, lineageConnections, lineageOrder, mapTitle, mapSubtitle } = philosopher;
   const store = useAppStore();
+  const color = philosopher.meta.color || "#6b9080";
+
+  // Auto-assign positions and defaults for nodes missing x/y/icon/color
+  const outline = useMemo(() => rawOutline.map((node, idx) => ({
+    ...node,
+    x: node.x ?? 15 + (idx % 3) * 35,
+    y: node.y ?? 12 + Math.floor(idx / 3) * 30,
+    icon: node.icon ?? "◯",
+    color: node.color ?? color,
+  })), [rawOutline, color]);
 
   const bgStars = useMemo(makeBgStars, []);
 
@@ -47,25 +57,25 @@ export default function ThoughtMapModal({ philosopher, exploredNodes, onClose, o
         style={{
           width: "min(520px,94vw)", maxHeight: "92dvh",
           background: "linear-gradient(160deg,#06060f,#080c1a,#060810)",
-          borderRadius: 20, border: "1px solid rgba(245,197,66,0.12)",
+          borderRadius: 20, border: "1px solid rgba(107,144,128,0.12)",
           overflow: "hidden",
-          boxShadow: "0 0 100px rgba(245,197,66,0.06), inset 0 0 60px rgba(20,20,40,0.5)",
+          boxShadow: "0 0 100px rgba(107,144,128,0.06), inset 0 0 60px rgba(20,20,40,0.5)",
           animation: "slideUp 0.35s ease",
           display: "flex", flexDirection: "column",
         }}
       >
         {/* Header */}
-        <div style={{ padding: "18px 24px 12px", borderBottom: "1px solid rgba(245,197,66,0.08)", flexShrink: 0 }}>
+        <div style={{ padding: "18px 24px 12px", borderBottom: "1px solid rgba(107,144,128,0.08)", flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
-              <div style={{ fontSize: 10, color: "#F5C542", letterSpacing: "0.18em", fontWeight: 600, marginBottom: 3 }}>
+              <div style={{ fontSize: 10, color: "#6b9080", letterSpacing: "0.18em", fontWeight: 600, marginBottom: 3 }}>
                 ✦ {mapTitle} ✦
               </div>
               <div style={{ fontSize: 16, color: "#e0e0f0", fontFamily: "'Noto Serif SC',serif", fontWeight: 700 }}>
                 {mapSubtitle}
               </div>
             </div>
-            <div style={{ fontSize: 11, color: "#555", background: "rgba(245,197,66,0.06)", padding: "4px 12px", borderRadius: 10, border: "1px solid rgba(245,197,66,0.1)" }}>
+            <div style={{ fontSize: 11, color: "#555", background: "rgba(107,144,128,0.06)", padding: "4px 12px", borderRadius: 10, border: "1px solid rgba(107,144,128,0.1)" }}>
               {exploredNodes.length}/{lineageOrder.length} 已探索
             </div>
           </div>
@@ -106,7 +116,7 @@ export default function ThoughtMapModal({ philosopher, exploredNodes, onClose, o
               return (
                 <line key={i}
                   x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                  stroke={both ? "rgba(245,197,66,0.25)" : either ? "rgba(200,210,255,0.12)" : "rgba(200,210,255,0.04)"}
+                  stroke={both ? "rgba(107,144,128,0.25)" : either ? "rgba(200,210,255,0.12)" : "rgba(200,210,255,0.04)"}
                   strokeWidth={isMain ? (both ? "0.4" : "0.25") : "0.18"}
                   strokeDasharray={both ? "none" : either ? "1.5,1" : "0.8,1.2"}
                 />
@@ -185,15 +195,15 @@ export default function ThoughtMapModal({ philosopher, exploredNodes, onClose, o
               );
             })}
 
-            <text x="50" y="1.5" textAnchor="middle" fontSize="1.3" fill="#F5C542" opacity="0.5" fontFamily="'Cormorant Garamond',serif" fontWeight="600" letterSpacing="0.3">ORIGIN</text>
+            <text x="50" y="1.5" textAnchor="middle" fontSize="1.3" fill="#6b9080" opacity="0.5" fontFamily="'Cormorant Garamond',serif" fontWeight="600" letterSpacing="0.3">ORIGIN</text>
             <text x="50" y="122" textAnchor="middle" fontSize="1.3" fill="#8B9DAF" opacity="0.4" fontFamily="'Cormorant Garamond',serif" fontWeight="600" letterSpacing="0.3">TERMINUS</text>
           </svg>
         </div>
 
         {/* Footer */}
-        <div style={{ padding: "12px 24px 16px", borderTop: "1px solid rgba(245,197,66,0.06)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
+        <div style={{ padding: "12px 24px 16px", borderTop: "1px solid rgba(107,144,128,0.06)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
           <div style={{ fontSize: 11, color: "#444", display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#F5C542", display: "inline-block" }} />已探索
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#6b9080", display: "inline-block" }} />已探索
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#222235", border: "1px solid #333348", display: "inline-block", marginLeft: 10 }} />待探索
             <span style={{ width: 20, height: 1, background: "rgba(200,210,255,0.12)", display: "inline-block", marginLeft: 10 }} />思想关联
           </div>

@@ -45,7 +45,7 @@ export default function KnowledgeCardModal({ card, nodeColor, onClose }: Props) 
             background: `linear-gradient(135deg,${color}10,transparent)`,
           }}
         >
-          <div style={{ fontSize: 30, marginBottom: 6 }}>{card.icon}</div>
+          {card.icon && <div style={{ fontSize: 30, marginBottom: 6 }}>{card.icon}</div>}
           <div style={{ fontSize: 21, fontWeight: 700, color: "#e8e8f0", fontFamily: "'Noto Serif SC',serif" }}>
             {card.title}
           </div>
